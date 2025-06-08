@@ -1,0 +1,8 @@
+# Ignorar entorno virtual local
+venv/
+__pycache__/
+*.py[cod]
+
+# Ignorar configuraciones de IDE
+.vscode/
+.idea/
