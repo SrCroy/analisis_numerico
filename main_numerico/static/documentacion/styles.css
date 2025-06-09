@@ -1,0 +1,140 @@
+body {
+    background-color: #121212;
+    color: white;
+    font-family: 'Courier New', monospace;
+    margin: 0;
+    padding: 0;
+}
+
+h1,
+h2,
+h3 {
+    color: #33ff33;
+    margin-top: 0;
+}
+
+a {
+    color: #33ff33;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+#sidebar {
+    background-color: #000;
+    width: 300px;
+    padding: 1.5rem;
+    border-right: 2px solid #33ff33;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+#sidebar ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+#content {
+    margin-left: 300px;
+    padding: 1.5rem;
+}
+
+.tool-container {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px dashed #33ff33;
+}
+
+.tool-container:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.terminal-container {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.terminal-box {
+    flex: 1;
+    min-width: 0;
+}
+
+.terminal {
+    background-color: #1e1e1e;
+    color: #33ff33;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    height: 180px;
+    overflow-y: auto;
+    font-family: 'Courier New', monospace;
+}
+
+.terminal-header {
+    background-color: #2b2b2b;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.circle {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.red {
+    background-color: #ff5f56;
+}
+
+.yellow {
+    background-color: #ffbd2e;
+}
+
+.green {
+    background-color: #27c93f;
+}
+
+.cursor {
+    display: inline-block;
+    width: 10px;
+    height: 1em;
+    background-color: #33ff33;
+    animation: blink 0.8s infinite;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+/* Ajustes para navbar */
+.navbar {
+    z-index: 1030;
+}
+
+body {
+    padding-top: 56px;
+}
+
+footer {
+    position: relative;
+    left: 0;
+    bottom: 0;
+}

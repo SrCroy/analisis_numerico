@@ -1,0 +1,231 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Documentación - Análisis Numérico</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'documentacion/styles.css' %}">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="{% url 'index' %}">Análisis Numérico</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#">Documentación</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Metodos</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#">Iniciar Sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenedor principal -->
+    <div>
+        <!-- Sidebar -->
+        <aside id="sidebar">
+            <h5>Herramientas</h5>
+            <ul>
+                <li><a href="#python"><i class="bi bi-terminal"></i> Python</a></li>
+                <li><a href="#numpy"><i class="bi bi-calculator"></i> NumPy</a></li>
+                <li><a href="#matplotlib"><i class="bi bi-bar-chart-line"></i> Matplotlib</a></li>
+                <li><a href="#sympy"><i class="bi bi-braces"></i> Sympy</a></li>
+                <li><a href="#django"><i class="bi bi-cloud"></i> Django</a></li>
+            </ul>
+        </aside>
+
+        <!-- Contenido principal -->
+        <main id="content">
+            <div class="tool-container">
+                <h2>Documentacion</h2>
+                <p>Para el desarrollo del proyecto se utilizó Python como lenguaje principal por su facilidad de uso y
+                    potencia. Se integró NumPy para realizar cálculos numéricos eficientes y Matplotlib para generar
+                    gráficos y visualizar datos de forma clara. Sympy permitió resolver operaciones matemáticas
+                    simbólicas como derivadas e integrales. Finalmente, se utilizó el framework Django para crear la
+                    estructura web del sistema, facilitando la gestión del backend y la interfaz de usuario.</p>
+                <p id="python"></p>
+            </div>
+            <br>
+            <!-- Python -->
+            <div class="tool-container">
+                <h2>Python</h2>
+                <p>Es un lenguaje de programación versátil ampliamente utilizado en el análisis numérico por su
+                    simplicidad y poder. Permite implementar métodos numéricos de forma clara y eficiente, y es
+                    compatible con bibliotecas especializadas para cálculos matemáticos, visualización y resolución de
+                    problemas científicos.</p>
+
+                <h4>Instalación</h4>
+                <div class="terminal-container">
+                    <div class="terminal-box">
+                        <div class="terminal-header">
+                            <div class="circle red"></div>
+                            <div class="circle yellow"></div>
+                            <div class="circle green"></div>
+                            <span>Windows</span>
+                        </div>
+                        <div class="terminal" id="terminal-python-win"></div>
+                    </div>
+                    <div class="terminal-box">
+                        <div class="terminal-header">
+                            <div class="circle red"></div>
+                            <div class="circle yellow"></div>
+                            <div class="circle green"></div>
+                            <span>Debian</span>
+                        </div>
+                        <div class="terminal" id="terminal-python-deb"></div>
+                    </div>
+                </div>
+                <p id="numpy"></p>
+            </div>
+            <br>
+
+            <!-- NumPy -->
+            <div class="tool-container">
+                <h2>NumPy</h2>
+                <p>Es una biblioteca fundamental para el análisis numérico en Python. Proporciona estructuras de datos
+                    eficientes, como los arreglos multidimensionales (ndarray), y funciones matemáticas de alto
+                    rendimiento. Es ideal para operaciones vectorizadas, álgebra lineal, interpolación y otros métodos
+                    numéricos usados en problemas científicos y de ingeniería.</p>
+
+                <h4>Instalación</h4>
+                <div class="terminal-container">
+                    <div class="terminal-box">
+                        <div class="terminal-header">
+                            <div class="circle red"></div>
+                            <div class="circle yellow"></div>
+                            <div class="circle green"></div>
+                            <span>Windows</span>
+                        </div>
+                        <div class="terminal" id="terminal-numpy-win"></div>
+                    </div>
+                    <div class="terminal-box">
+                        <div class="terminal-header">
+                            <div class="circle red"></div>
+                            <div class="circle yellow"></div>
+                            <div class="circle green"></div>
+                            <span>Debian</span>
+                        </div>
+                        <div class="terminal" id="terminal-numpy-deb"></div>
+                    </div>
+                </div>
+                <p id="matplotlib"></p>
+            </div>
+            <br>
+
+            <!-- Matplotlib -->
+            <div class="tool-container">
+                <h2>Matplotlib</h2>
+                <p>Es una biblioteca de Python utilizada para la creación de gráficos y visualizaciones. En análisis
+                    numérico, permite representar funciones, datos experimentales y resultados de métodos numéricos como
+                    aproximaciones, soluciones de ecuaciones o errores, facilitando la interpretación visual de los
+                    resultados.</p>
+
+                <h4>Instalación</h4>
+                <div class="terminal-container">
+                    <div class="terminal-box">
+                        <div class="terminal-header">
+                            <div class="circle red"></div>
+                            <div class="circle yellow"></div>
+                            <div class="circle green"></div>
+                            <span>Windows</span>
+                        </div>
+                        <div class="terminal" id="terminal-matplotlib-win"></div>
+                    </div>
+                    <div class="terminal-box">
+                        <div class="terminal-header">
+                            <div class="circle red"></div>
+                            <div class="circle yellow"></div>
+                            <div class="circle green"></div>
+                            <span>Debian</span>
+                        </div>
+                        <div class="terminal" id="terminal-matplotlib-deb"></div>
+                    </div>
+                </div>
+                <p id="sympy"></p>
+            </div>
+            <br>
+
+            <!-- Sympy -->
+            <div class="tool-container">
+                <h2>Sympy</h2>
+                <p>Es una biblioteca de Python para matemáticas simbólicas. Permite realizar operaciones como derivadas,
+                    integrales, simplificaciones y resolución de ecuaciones de forma exacta. Aunque se enfoca en el
+                    álgebra simbólica, es útil en análisis numérico para validar resultados analíticos y generar
+                    expresiones que luego se pueden evaluar numéricamente.</p>
+
+                <h4>Instalación</h4>
+                <div class="terminal-container">
+                    <div class="terminal-box">
+                        <div class="terminal-header">
+                            <div class="circle red"></div>
+                            <div class="circle yellow"></div>
+                            <div class="circle green"></div>
+                            <span>Windows</span>
+                        </div>
+                        <div class="terminal" id="terminal-sympy-win"></div>
+                    </div>
+                    <div class="terminal-box">
+                        <div class="terminal-header">
+                            <div class="circle red"></div>
+                            <div class="circle yellow"></div>
+                            <div class="circle green"></div>
+                            <span>Debian</span>
+                        </div>
+                        <div class="terminal" id="terminal-sympy-deb"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Django -->
+            <div id="django" class="tool-container">
+                <h2>Django</h2>
+                <p>Framework web para desarrollo rápido y diseño limpio.</p>
+
+                <h4>Instalación</h4>
+                <div class="terminal-container">
+                    <div class="terminal-box">
+                        <div class="terminal-header">
+                            <div class="circle red"></div>
+                            <div class="circle yellow"></div>
+                            <div class="circle green"></div>
+                            <span>Windows</span>
+                        </div>
+                        <div class="terminal" id="terminal-django-win"></div>
+                    </div>
+                    <div class="terminal-box">
+                        <div class="terminal-header">
+                            <div class="circle red"></div>
+                            <div class="circle yellow"></div>
+                            <div class="circle green"></div>
+                            <span>Debian</span>
+                        </div>
+                        <div class="terminal" id="terminal-django-deb"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-4 mt-5">
+        <div class="container">
+            <p class="mb-0">© 2023 Análisis Numérico. Todos los derechos reservados.</p>
+            <p class="mb-0">Desarrollado por UES</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'documentacion/main.js' %}"></script>
+</body>
+
+</html>

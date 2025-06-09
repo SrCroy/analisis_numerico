@@ -5,5 +5,6 @@ from . import views
 urlpatterns = [
     path('', views.index, name='index'),
     path('index', views.index),
-    path('index/', views.index),  # <-- Agrega esta línea
+    path('index/', views.index),
+    path('documentacion/', views.documentacion, name='documentacion'),
 ]
