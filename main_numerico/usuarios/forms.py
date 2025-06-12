@@ -18,3 +18,8 @@ class UsuarioForm(forms.ModelForm):
 
         if contrasena != confirmar:
             raise forms.ValidationError("Las contraseñas no coinciden")
+
+
+class LoginForm(forms.Form):
+    correo = forms.EmailField(label="Correo")
+    contrasena = forms.CharField(widget=forms.PasswordInput(), label="Contraseña")
