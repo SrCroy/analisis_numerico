@@ -1,0 +1,241 @@
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Crear Usuario - Terminal Debian</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        /* Aquí tu CSS personalizado (igual que el que enviaste) */
+        body {
+            background-color: #121212;
+            color: #33ff33;
+            font-family: 'Courier New', monospace;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            flex: 1 0 auto;
+        }
+
+        footer {
+            flex-shrink: 0;
+        }
+
+        .terminal-header {
+            background-color: #2b2b2b;
+            color: white;
+            padding: 0.3rem 0.7rem;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            font-size: 0.95rem;
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .circle {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .red {
+            background-color: #ff5f56;
+        }
+
+        .yellow {
+            background-color: #ffbd2e;
+        }
+
+        .green {
+            background-color: #27c93f;
+        }
+
+        .terminal {
+            background-color: #1e1e1e;
+            padding: 1rem;
+            border-radius: 0 0 0.5rem 0.5rem;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        label {
+            color: #33ff33;
+        }
+
+        .form-label,
+        .form-control {
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            background-color: #121212;
+            color: #33ff33;
+            border: 1px solid #33ff33;
+            padding: 0.25rem 0.5rem;
+        }
+
+        .form-control::placeholder {
+            color: #66ff66;
+        }
+
+        .btn-terminal {
+            background-color: #33ff33;
+            color: #121212;
+            font-weight: bold;
+            border: none;
+            padding: 0.3rem 0.5rem;
+            font-size: 1rem;
+        }
+
+        .btn-terminal:hover {
+            background-color: #00cc00;
+        }
+
+        .registro-wrapper {
+            height: calc(100vh - 56px - 80px);
+        }
+
+        .registro-form-container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .errorlist {
+            color: #ff5f56;
+            list-style-type: none;
+            padding: 0;
+            margin: 0 0 5px 0;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="{% url 'index' %}">Análisis Numérico</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'documentacion' %}">Documentación</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Diferencias Divididas</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#">Crear Usuario</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Formulario de Registro -->
+    <div class="d-flex flex-column justify-content-center align-items-center registro-wrapper">
+        <div class="registro-form-container">
+            <div class="terminal-header">
+                <div class="circle red"></div>
+                <div class="circle yellow"></div>
+                <div class="circle green"></div>
+                <span class="ms-2">Crear Usuario</span>
+            </div>
+            <div class="terminal">
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="mb-2">
+                        <label class="form-label">{{ field.label }}:</label>
+                        {{ field|add_class:"form-control" }}
+                        {% if field.errors %}
+                        <ul class="errorlist">
+                            {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    {% if form.non_field_errors %}
+                    <ul class="errorlist mb-2">
+                        {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    <button type="submit" class="btn btn-terminal w-100 mt-2">Crear Cuenta</button>
+                    <div class="text-center mt-2">
+                        <span>¿Ya tienes cuenta? </span>
+                        <a href="{% url 'index' %}" style="color: #33ff33; text-decoration: underline;">Iniciar
+                            sesión</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para mensajes -->
+    <!-- Modal para mostrar mensajes -->
+    <div class="modal fade" id="mensajeModal" tabindex="-1" aria-labelledby="mensajeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-success border-success">
+                <div class="modal-header border-success">
+                    <h5 class="modal-title" id="mensajeModalLabel">Mensaje</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    {% for message in messages %}
+                    <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+                <div class="modal-footer border-success">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3" style="height: 80px;">
+        <div>
+            <p class="mb-0">© 2023 Análisis Numérico. Todos los derechos reservados.</p>
+            <p class="mb-0">Desarrollado por UES</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script para mostrar modal si hay mensajes -->
+    {% if messages %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var modal = new bootstrap.Modal(document.getElementById('mensajeModal'));
+            modal.show();
+        });
+    </script>
+    {% endif %}
+
+
+
+</body>
+
+</html>
