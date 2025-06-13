@@ -4,11 +4,14 @@ body {
     font-family: 'Courier New', monospace;
     margin: 0;
     padding: 0;
+    padding-top: 0 !important;
+    /* Elimina el padding-top que Bootstrap añade */
 }
 
 h1,
 h2,
-h3 {
+h3,
+h4 {
     color: #33ff33;
     margin-top: 0;
 }
@@ -22,13 +25,26 @@ a:hover {
     text-decoration: underline;
 }
 
+/* Navbar ajustado */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1030;
+    margin-bottom: 0;
+}
+
+/* Sidebar ajustado */
 #sidebar {
     background-color: #000;
     width: 300px;
     padding: 1.5rem;
     border-right: 2px solid #33ff33;
     position: fixed;
-    height: 100vh;
+    top: 56px;
+    /* Comienza después del navbar */
+    height: calc(100vh - 56px);
+    /* Altura total menos altura del navbar */
     overflow-y: auto;
 }
 
@@ -37,21 +53,20 @@ a:hover {
     padding-left: 0;
 }
 
+/* Contenido principal ajustado */
 #content {
     margin-left: 300px;
+    margin-top: 56px;
+    /* Compensa la altura del navbar */
     padding: 1.5rem;
 }
 
 .tool-container {
     margin-bottom: 1.5rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px dashed #33ff33;
-}
-
-.tool-container:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-    padding-bottom: 0;
+    padding: 1.5rem;
+    border: 1px solid #33ff33;
+    border-radius: 0.5rem;
+    background-color: #1e1e1e;
 }
 
 .terminal-container {
@@ -70,7 +85,7 @@ a:hover {
     color: #33ff33;
     padding: 1rem;
     border-radius: 0.5rem;
-    height: 180px;
+    height: auto;
     overflow-y: auto;
     font-family: 'Courier New', monospace;
 }
@@ -124,17 +139,66 @@ a:hover {
     }
 }
 
-/* Ajustes para navbar */
-.navbar {
-    z-index: 1030;
+.formula {
+    background-color: #2b2b2b;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+    font-family: 'Courier New', monospace;
+    color: #33ff33;
+    overflow-x: auto;
 }
 
-body {
-    padding-top: 56px;
+.example {
+    background-color: #1e1e1e;
+    border-left: 3px solid #33ff33;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.example-title {
+    color: #33ff33;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    background-color: #1e1e1e;
+}
+
+th,
+td {
+    border: 1px solid #33ff33;
+    padding: 0.5rem;
+    text-align: center;
+}
+
+th {
+    background-color: #2b2b2b;
+    color: #33ff33;
 }
 
 footer {
     position: relative;
     left: 0;
     bottom: 0;
+}
+
+/* Estilos responsivos */
+@media (max-width: 992px) {
+    #sidebar {
+        width: 100%;
+        position: static;
+        height: auto;
+        top: auto;
+    }
+
+    #content {
+        margin-left: 0;
+        margin-top: 56px;
+        /* Mantener margen para el navbar */
+    }
 }

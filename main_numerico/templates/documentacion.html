@@ -13,18 +13,30 @@
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="{% url 'index' %}">Análisis Numérico</a>
+            <a class="navbar-brand fw-bold" href="#">Análisis Numérico</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#">Documentación</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Metodos</a>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'documentacion' %}">Documentación</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Métodos</a></li>
+
+                    {% if request.session.usuario_id %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ request.session.usuario_nombre }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
+                        </ul>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="#">Iniciar Sesión</a></li>
+                    {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
@@ -41,11 +53,14 @@
                 <li><a href="#matplotlib"><i class="bi bi-bar-chart-line"></i> Matplotlib</a></li>
                 <li><a href="#sympy"><i class="bi bi-braces"></i> Sympy</a></li>
                 <li><a href="#django"><i class="bi bi-cloud"></i> Django</a></li>
+                <li><a href="#dif-numerica"><i class="bi bi-graph-up"></i> Diferenciación Numérica</a></li>
+                <li><a href="#dif-divididas"><i class="bi bi-diagram-3"></i> Diferencias Divididas</a></li>
             </ul>
         </aside>
 
         <!-- Contenido principal -->
         <main id="content">
+            <!-- Contenido original -->
             <div class="tool-container">
                 <h2>Documentacion</h2>
                 <p>Para el desarrollo del proyecto se utilizó Python como lenguaje principal por su facilidad de uso y
@@ -55,7 +70,7 @@
                     estructura web del sistema, facilitando la gestión del backend y la interfaz de usuario.</p>
                 <p id="python"></p>
             </div>
-            <br>
+
             <!-- Python -->
             <div class="tool-container">
                 <h2>Python</h2>
@@ -73,7 +88,12 @@
                             <div class="circle green"></div>
                             <span>Windows</span>
                         </div>
-                        <div class="terminal" id="terminal-python-win"></div>
+                        <div class="terminal" id="terminal-python-win">
+                            Descargar e instalar desde python.org<br>
+                            Verificar instalación:<br>
+                            python --version<br>
+                            pip --version
+                        </div>
                     </div>
                     <div class="terminal-box">
                         <div class="terminal-header">
@@ -82,12 +102,17 @@
                             <div class="circle green"></div>
                             <span>Debian</span>
                         </div>
-                        <div class="terminal" id="terminal-python-deb"></div>
+                        <div class="terminal" id="terminal-python-deb">
+                            sudo apt update<br>
+                            sudo apt install python3 python3-pip<br>
+                            Verificar instalación:<br>
+                            python3 --version<br>
+                            pip3 --version
+                        </div>
                     </div>
                 </div>
                 <p id="numpy"></p>
             </div>
-            <br>
 
             <!-- NumPy -->
             <div class="tool-container">
@@ -106,7 +131,11 @@
                             <div class="circle green"></div>
                             <span>Windows</span>
                         </div>
-                        <div class="terminal" id="terminal-numpy-win"></div>
+                        <div class="terminal" id="terminal-numpy-win">
+                            pip install numpy<br><br>
+                            Verificar instalación:<br>
+                            python -c "import numpy; print(numpy.__version__)"
+                        </div>
                     </div>
                     <div class="terminal-box">
                         <div class="terminal-header">
@@ -115,12 +144,17 @@
                             <div class="circle green"></div>
                             <span>Debian</span>
                         </div>
-                        <div class="terminal" id="terminal-numpy-deb"></div>
+                        <div class="terminal" id="terminal-numpy-deb">
+                            sudo apt install python3-numpy<br><br>
+                            O alternativamente:<br>
+                            pip3 install numpy<br><br>
+                            Verificar instalación:<br>
+                            python3 -c "import numpy; print(numpy.__version__)"
+                        </div>
                     </div>
                 </div>
                 <p id="matplotlib"></p>
             </div>
-            <br>
 
             <!-- Matplotlib -->
             <div class="tool-container">
@@ -139,7 +173,11 @@
                             <div class="circle green"></div>
                             <span>Windows</span>
                         </div>
-                        <div class="terminal" id="terminal-matplotlib-win"></div>
+                        <div class="terminal" id="terminal-matplotlib-win">
+                            pip install matplotlib<br><br>
+                            Verificar instalación:<br>
+                            python -c "import matplotlib; print(matplotlib.__version__)"
+                        </div>
                     </div>
                     <div class="terminal-box">
                         <div class="terminal-header">
@@ -148,12 +186,17 @@
                             <div class="circle green"></div>
                             <span>Debian</span>
                         </div>
-                        <div class="terminal" id="terminal-matplotlib-deb"></div>
+                        <div class="terminal" id="terminal-matplotlib-deb">
+                            sudo apt install python3-matplotlib<br><br>
+                            O alternativamente:<br>
+                            pip3 install matplotlib<br><br>
+                            Verificar instalación:<br>
+                            python3 -c "import matplotlib; print(matplotlib.__version__)"
+                        </div>
                     </div>
                 </div>
                 <p id="sympy"></p>
             </div>
-            <br>
 
             <!-- Sympy -->
             <div class="tool-container">
@@ -172,7 +215,11 @@
                             <div class="circle green"></div>
                             <span>Windows</span>
                         </div>
-                        <div class="terminal" id="terminal-sympy-win"></div>
+                        <div class="terminal" id="terminal-sympy-win">
+                            pip install sympy<br><br>
+                            Verificar instalación:<br>
+                            python -c "import sympy; print(sympy.__version__)"
+                        </div>
                     </div>
                     <div class="terminal-box">
                         <div class="terminal-header">
@@ -181,7 +228,13 @@
                             <div class="circle green"></div>
                             <span>Debian</span>
                         </div>
-                        <div class="terminal" id="terminal-sympy-deb"></div>
+                        <div class="terminal" id="terminal-sympy-deb">
+                            sudo apt install python3-sympy<br><br>
+                            O alternativamente:<br>
+                            pip3 install sympy<br><br>
+                            Verificar instalación:<br>
+                            python3 -c "import sympy; print(sympy.__version__)"
+                        </div>
                     </div>
                 </div>
             </div>
@@ -200,7 +253,11 @@
                             <div class="circle green"></div>
                             <span>Windows</span>
                         </div>
-                        <div class="terminal" id="terminal-django-win"></div>
+                        <div class="terminal" id="terminal-django-win">
+                            pip install django<br><br>
+                            Verificar instalación:<br>
+                            python -c "import django; print(django.__version__)"
+                        </div>
                     </div>
                     <div class="terminal-box">
                         <div class="terminal-header">
@@ -209,7 +266,166 @@
                             <div class="circle green"></div>
                             <span>Debian</span>
                         </div>
-                        <div class="terminal" id="terminal-django-deb"></div>
+                        <div class="terminal" id="terminal-django-deb">
+                            sudo apt install python3-django<br><br>
+                            O alternativamente:<br>
+                            pip3 install django<br><br>
+                            Verificar instalación:<br>
+                            python3 -c "import django; print(django.__version__)"
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nuevo contenido: Diferenciación Numérica -->
+            <div id="dif-numerica" class="tool-container">
+                <h2>Diferenciación Numérica</h2>
+                <p>La diferenciación numérica es una técnica utilizada para aproximar la derivada de una función en un
+                    punto cuando no se dispone de la expresión analítica de la función o cuando es difícil de derivar.
+                    Se basa en el uso de valores de la función en puntos cercanos.</p>
+
+                <p>El concepto fundamental se deriva de la definición de derivada:</p>
+
+                <div class="formula">
+                    f'(x) = lim<sub>h→0</sub> (f(x+h) - f(x)) / h
+                </div>
+
+                <p>En la práctica, no podemos tomar h infinitamente pequeño, por lo que usamos valores pequeños de h
+                    para aproximar la derivada.</p>
+
+                <h4>Tipos de fórmulas de diferenciación numérica:</h4>
+                <ul>
+                    <li>Diferencias hacia adelante</li>
+                    <li>Diferencias hacia atrás</li>
+                    <li>Diferencias centradas</li>
+                </ul>
+            </div>
+
+            <!-- Fórmulas de Diferenciación -->
+            <div id="formulas-dif" class="tool-container">
+                <h2>Fórmulas de Diferenciación Numérica</h2>
+
+                <h4>1. Diferencias hacia adelante</h4>
+                <div class="formula">
+                    f'(x) ≈ (f(x+h) - f(x)) / h
+                </div>
+                <p>Error: O(h)</p>
+
+                <h4>2. Diferencias hacia atrás</h4>
+                <div class="formula">
+                    f'(x) ≈ (f(x) - f(x-h)) / h
+                </div>
+                <p>Error: O(h)</p>
+
+                <h4>3. Diferencias centradas</h4>
+                <div class="formula">
+                    f'(x) ≈ (f(x+h) - f(x-h)) / (2h)
+                </div>
+                <p>Error: O(h²) - Más preciso que las anteriores</p>
+
+                <h4>Fórmulas de mayor orden</h4>
+                <p>Para la segunda derivada:</p>
+                <div class="formula">
+                    f''(x) ≈ (f(x+h) - 2f(x) + f(x-h)) / h²
+                </div>
+                <p>Error: O(h²)</p>
+            </div>
+
+            <!-- Diferencias Divididas -->
+            <div id="dif-divididas" class="tool-container">
+                <h2>Diferencias Divididas</h2>
+                <p>Las diferencias divididas son una herramienta fundamental en el cálculo de polinomios de
+                    interpolación, especialmente en la forma de Newton. También se pueden usar para aproximar derivadas.
+                </p>
+
+                <h4>Definición recursiva:</h4>
+                <div class="formula">
+                    f[x<sub>i</sub>] = f(x<sub>i</sub>)<br>
+                    f[x<sub>i</sub>, x<sub>i+1</sub>, ..., x<sub>i+k</sub>] = (f[x<sub>i+1</sub>, ..., x<sub>i+k</sub>]
+                    - f[x<sub>i</sub>, ..., x<sub>i+k-1</sub>]) / (x<sub>i+k</sub> - x<sub>i</sub>)
+                </div>
+
+                <h4>Tabla de diferencias divididas:</h4>
+                <p>Se organizan en una tabla triangular donde cada nivel representa un orden mayor de diferencias:</p>
+
+                <table>
+                    <tr>
+                        <th>x</th>
+                        <th>f(x)</th>
+                        <th>Primera diferencia</th>
+                        <th>Segunda diferencia</th>
+                        <th>Tercera diferencia</th>
+                    </tr>
+                    <tr>
+                        <td>x<sub>0</sub></td>
+                        <td>f[x<sub>0</sub>]</td>
+                        <td>f[x<sub>0</sub>, x<sub>1</sub>]</td>
+                        <td>f[x<sub>0</sub>, x<sub>1</sub>, x<sub>2</sub>]</td>
+                        <td>f[x<sub>0</sub>, x<sub>1</sub>, x<sub>2</sub>, x<sub>3</sub>]</td>
+                    </tr>
+                    <tr>
+                        <td>x<sub>1</sub></td>
+                        <td>f[x<sub>1</sub>]</td>
+                        <td>f[x<sub>1</sub>, x<sub>2</sub>]</td>
+                        <td>f[x<sub>1</sub>, x<sub>2</sub>, x<sub>3</sub>]</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>x<sub>2</sub></td>
+                        <td>f[x<sub>2</sub>]</td>
+                        <td>f[x<sub>2</sub>, x<sub>3</sub>]</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>x<sub>3</sub></td>
+                        <td>f[x<sub>3</sub>]</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+
+                <h4>Relación con derivadas:</h4>
+                <p>Cuando los puntos están igualmente espaciados y h → 0, las diferencias divididas convergen a las
+                    derivadas:</p>
+                <div class="formula">
+                    f'(x) ≈ f[x, x+h] = (f(x+h) - f(x)) / h
+                </div>
+
+                <h4>Implementación en Python</h4>
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="circle red"></div>
+                        <div class="circle yellow"></div>
+                        <div class="circle green"></div>
+                        <span>Python</span>
+                    </div>
+                    <div class="terminal-content">
+                        <pre>
+# Diferenciación numérica
+def forward_diff(f, x, h):
+    return (f(x+h) - f(x)) / h
+
+def backward_diff(f, x, h):
+    return (f(x) - f(x-h)) / h
+
+def centered_diff(f, x, h):
+    return (f(x+h) - f(x-h)) / (2*h)
+
+# Diferencias divididas
+def divided_diff(x, y):
+    n = len(y)
+    coef = y.copy()
+    for j in range(1, n):
+        for i in range(n-1, j-1, -1):
+            coef[i] = (coef[i] - coef[i-1]) / (x[i] - x[i-j])
+    return coef
+
+# Ejemplo de uso
+x_points = [1, 2, 4, 5]
+y_points = [2, 3, 11, 20]
+print("Coeficientes:", divided_diff(x_points, y_points))</pre>
                     </div>
                 </div>
             </div>
@@ -225,7 +441,9 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{% static 'documentacion/main.js' %}"></script>
 </body>
 
 </html>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'documentacion/main.js' %}"></script>
