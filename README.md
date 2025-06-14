@@ -13,11 +13,9 @@ Este repositorio contiene el proyecto final del curso de Análisis Numérico des
 
 3. Instala las dependencias necesarias ejecutando `pip install -r requirements.txt`.
 
-4. Crea un archivo `.env` y agrega las variables de entorno necesarias según tu configuración.
+4. Ejecuta las migraciones con `python manage.py migrate`.
 
-5. Ejecuta las migraciones con `python manage.py migrate`.
-
-6. Inicia el servidor de desarrollo con `python manage.py runserver`.
+5. Inicia el servidor de desarrollo con `python manage.py runserver`.
 
 ## 🌐 Uso
 Abre tu navegador y accede a [http://127.0.0.1:8000/](http://127.0.0.1:8000/) para comenzar a usar la aplicación y resolver problemas de programación lineal.
