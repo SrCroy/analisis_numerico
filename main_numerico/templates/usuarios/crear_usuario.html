@@ -1,4 +1,5 @@
 {% load widget_tweaks %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 
@@ -7,142 +8,21 @@
     <title>Crear Usuario - Terminal Debian</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <style>
-        /* Aquí tu CSS personalizado (igual que el que enviaste) */
-        body {
-            background-color: #121212;
-            color: #33ff33;
-            font-family: 'Courier New', monospace;
-        }
-
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .container {
-            flex: 1 0 auto;
-        }
-
-        footer {
-            flex-shrink: 0;
-        }
-
-        .terminal-header {
-            background-color: #2b2b2b;
-            color: white;
-            padding: 0.3rem 0.7rem;
-            border-top-left-radius: 0.5rem;
-            border-top-right-radius: 0.5rem;
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-            font-size: 0.95rem;
-            max-width: 600px;
-            width: 100%;
-            margin: 0 auto;
-        }
-
-        .circle {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .red {
-            background-color: #ff5f56;
-        }
-
-        .yellow {
-            background-color: #ffbd2e;
-        }
-
-        .green {
-            background-color: #27c93f;
-        }
-
-        .terminal {
-            background-color: #1e1e1e;
-            padding: 1rem;
-            border-radius: 0 0 0.5rem 0.5rem;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
-            max-width: 600px;
-            width: 100%;
-            margin: 0 auto;
-        }
-
-        label {
-            color: #33ff33;
-        }
-
-        .form-label,
-        .form-control {
-            font-size: 0.95rem;
-        }
-
-        .form-control {
-            background-color: #121212;
-            color: #33ff33;
-            border: 1px solid #33ff33;
-            padding: 0.25rem 0.5rem;
-        }
-
-        .form-control::placeholder {
-            color: #66ff66;
-        }
-
-        .btn-terminal {
-            background-color: #33ff33;
-            color: #121212;
-            font-weight: bold;
-            border: none;
-            padding: 0.3rem 0.5rem;
-            font-size: 1rem;
-        }
-
-        .btn-terminal:hover {
-            background-color: #00cc00;
-        }
-
-        .registro-wrapper {
-            height: calc(100vh - 56px - 80px);
-        }
-
-        .registro-form-container {
-            max-width: 600px;
-            width: 100%;
-        }
-
-        .errorlist {
-            color: #ff5f56;
-            list-style-type: none;
-            padding: 0;
-            margin: 0 0 5px 0;
-            font-size: 0.9rem;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'crear_usuario/styles.css' %}">
 </head>
 
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="#">Análisis Numérico</a>
+            <a class="navbar-brand fw-bold" href="{% url 'index' %}">Análisis Numérico</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="{% url 'documentacion' %}">Documentación</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Métodos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'menu' %}">Métodos</a></li>
 
                     {% if request.session.usuario_id %}
                     <li class="nav-item dropdown">

@@ -1,0 +1,105 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Documentación - Análisis Numérico</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'menu/styles.css' %}">
+</head>
+
+<body>
+    <!-- Navbar con color gris oscuro (#212529) -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="{% url 'index' %}">Análisis Numérico</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'documentacion' %}">Documentación</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Metodos</a></li>
+                    {% if request.session.usuario_id %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ request.session.usuario_nombre }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <main id="content">
+        <div class="terminal-section">
+            <h2>Métodos de Diferencias</h2>
+            <div class="terminal-container">
+                <!-- Terminal Diferencias Numéricas -->
+                <div class="terminal-box">
+                    <div class="terminal-header">
+                        <div class="circle red"></div>
+                        <div class="circle yellow"></div>
+                        <div class="circle green"></div>
+                        <span>dif_numericas.exe</span>
+                    </div>
+                    <div class="terminal">
+                        <div class="terminal-content">
+                            <p>> Método de Diferencias Numéricas</p>
+                            <p>> Aproximación de derivadas</p>
+                            <p>> Error de truncamiento</p>
+                            <p>> Implementación del método</p>
+                        </div>
+                        <a href="#">
+                            <span class="access-btn">ACCEDER AQUÍ <i class="bi bi-arrow-right"></i></span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Terminal Diferencias Divididas -->
+                <div class="terminal-box">
+                    <div class="terminal-header">
+                        <div class="circle red"></div>
+                        <div class="circle yellow"></div>
+                        <div class="circle green"></div>
+                        <span>dif_divididas.exe</span>
+                    </div>
+                    <div class="terminal">
+                        <div class="terminal-content">
+                            <p>> Diferencias Divididas</p>
+                            <p>> Interpolación de Newton</p>
+                            <p>> Tabla de diferencias</p>
+                            <p>> Cálculo de coeficientes</p>
+                        </div>
+                        <a href="#">
+                            <span class="access-btn">ACCEDER AQUÍ <i class="bi bi-arrow-right"></i></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer con mismo color gris oscuro (#212529) -->
+    <footer>
+        <div class="container">
+            <p class="mb-0">© 2023 Análisis Numérico. Todos los derechos reservados.</p>
+            <p class="mb-0">Desarrollado por UES</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
