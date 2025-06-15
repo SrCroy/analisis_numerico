@@ -1,0 +1,600 @@
+{% load static %}
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Método de Diferencias Divididas de Newton</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --terminal-bg: #1e1e1e;
+            --terminal-text: #33ff33;
+            --terminal-header: #2d2d2d;
+            --terminal-red: #ff5f56;
+            --terminal-yellow: #ffbd2e;
+            --terminal-green: #27c93f;
+        }
+
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .navbar {
+            background-color: #1a1a1a !important;
+            border-bottom: 1px solid #33ff33;
+        }
+
+        .navbar-brand {
+            color: #33ff33 !important;
+            font-weight: bold;
+        }
+
+        .nav-link {
+            color: #e0e0e0 !important;
+        }
+
+        .nav-link:hover {
+            color: #33ff33 !important;
+        }
+
+        .dropdown-menu {
+            background-color: #2d2d2d;
+            border: 1px solid #33ff33;
+        }
+
+        .dropdown-item {
+            color: #e0e0e0;
+        }
+
+        .dropdown-item:hover {
+            background-color: #33ff33;
+            color: #121212;
+        }
+
+        /* Estilo de terminal */
+        .terminal-container {
+            background-color: var(--terminal-bg);
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .terminal-header {
+            background-color: var(--terminal-header);
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #444;
+        }
+
+        .circle {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .red {
+            background-color: var(--terminal-red);
+        }
+
+        .yellow {
+            background-color: var(--terminal-yellow);
+        }
+
+        .green {
+            background-color: var(--terminal-green);
+        }
+
+        .terminal-body {
+            padding: 20px;
+            color: var(--terminal-text);
+            font-family: 'Courier New', monospace;
+            min-height: 300px;
+            overflow-y: auto;
+        }
+
+        /* Estilos para el contenido */
+        .form-control,
+        .form-select {
+            background-color: #2d2d2d;
+            color: #e0e0e0;
+            border: 1px solid #444;
+            font-family: 'Courier New', monospace;
+        }
+
+        .form-control:focus {
+            background-color: #3d3d3d;
+            color: #33ff33;
+            border-color: #33ff33;
+            box-shadow: 0 0 0 0.25rem rgba(51, 255, 51, 0.25);
+        }
+
+        .form-control::placeholder {
+            color: #666;
+            font-style: italic;
+        }
+
+        .btn-primary {
+            background-color: #33ff33;
+            color: #121212;
+            border: none;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+
+        .btn-primary:hover {
+            background-color: #28cc28;
+        }
+
+        .btn-secondary {
+            background-color: #444;
+            color: #e0e0e0;
+            border: none;
+            font-family: 'Courier New', monospace;
+        }
+
+        .card {
+            background-color: #1e1e1e;
+            border: 1px solid #444;
+            color: #e0e0e0;
+        }
+
+        .card-header {
+            background-color: #2d2d2d;
+            border-bottom: 1px solid #444;
+            color: #33ff33;
+        }
+
+        /* Estilos para la tabla de diferencias divididas */
+        .divided-differences-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            color: #e0e0e0;
+        }
+
+        .divided-differences-table th,
+        .divided-differences-table td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #444;
+        }
+
+        .divided-differences-table th {
+            background-color: #2d2d2d;
+            color: #33ff33;
+            border-bottom: 2px solid #33ff33;
+        }
+
+        .divided-differences-table tr:hover {
+            background-color: #3d3d3d;
+            color: #33ff33;
+        }
+
+        .alert-info {
+            background-color: #1e3d1e;
+            border-color: #33ff33;
+            color: #e0e0e0;
+        }
+
+        .math-expression {
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+            font-size: 1.1em;
+            line-height: 1.5;
+        }
+
+        pre {
+            background-color: #1e1e1e;
+            color: #33ff33;
+            border: 1px solid #444;
+            border-radius: 4px;
+            padding: 10px;
+            overflow-x: auto;
+        }
+
+        code {
+            color: #33ff33;
+        }
+
+        .list-group-item {
+            background-color: #2d2d2d;
+            color: #e0e0e0;
+            border-color: #444;
+        }
+
+        .list-group-item:hover {
+            background-color: #3d3d3d;
+            color: #33ff33;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 20px;
+            background-color: #33ff33;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* Estilos mejorados para inputs con widget_tweaks */
+        .input-group-text {
+            background-color: #2d2d2d;
+            color: #33ff33;
+            border: 1px solid #444;
+            font-family: 'Courier New', monospace;
+        }
+
+        .form-floating label {
+            color: #666;
+            font-family: 'Courier New', monospace;
+        }
+
+        .form-floating>.form-control:focus~label,
+        .form-floating>.form-control:not(:placeholder-shown)~label {
+            color: #33ff33;
+        }
+
+        /* Efecto glow para inputs activos */
+        .form-control:focus {
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 5px rgba(51, 255, 51, 0.5);
+            }
+
+            to {
+                box-shadow: 0 0 10px rgba(51, 255, 51, 0.8);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark shadow">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="{% url 'index' %}">Análisis Numérico</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'documentacion' %}">Documentación</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'menu' %}">Métodos</a></li>
+
+                    {% if request.user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            {% if request.user.first_name %}
+                            {{ request.user.first_name }} {{ request.user.last_name }}
+                            {% else %}
+                            {{ request.user.username }}
+                            {% endif %}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <!-- Terminal-style container for the method -->
+        <div class="terminal-container">
+            <div class="terminal-header">
+                <div class="circle red"></div>
+                <div class="circle yellow"></div>
+                <div class="circle green"></div>
+                <span class="ms-2">Diferencias Divididas de Newton</span>
+            </div>
+            <div class="terminal-body">
+                <div class="mb-4">
+                    <form method="post" class="row g-3">
+                        {% csrf_token %}
+                        <div class="col-md-4">
+                            <label for="id_x_valores" class="form-label">Valores de x (separados por coma):</label>
+                            <input type="text" name="x_valores" id="id_x_valores" class="form-control terminal-input"
+                                placeholder="1, 2, 3, 4" value="{{ form.x_valores.value|default_if_none:'' }}">
+                            <div class="form-text">Ejemplo: 1, 2, 3, 4</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="id_y_valores" class="form-label">Valores de y (separados por coma):</label>
+                            <input type="text" name="y_valores" id="id_y_valores" class="form-control terminal-input"
+                                placeholder="5, 7, 9, 11" value="{{ form.y_valores.value|default_if_none:'' }}">
+                            <div class="form-text">Ejemplo: 5, 7, 9, 11</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="id_valor_evaluar" class="form-label">Valor de x a evaluar (opcional):</label>
+                            <input type="number" step="any" name="valor_evaluar" id="id_valor_evaluar"
+                                class="form-control terminal-input" placeholder="2.5"
+                                value="{{ form.valor_evaluar.value|default_if_none:'' }}">
+                            <div class="form-text">Ejemplo: 2.5</div>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-calculator"></i> Calcular
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Results section -->
+                {% if pol_texto %}
+                <div class="mt-4">
+                    <h4 class="text-success mb-3">
+                        <i class="bi bi-graph-up"></i> Resultados
+                    </h4>
+
+                    <!-- Polynomial -->
+                    <div class="mb-4">
+                        <h5 class="text-primary">
+                            <i class="bi bi-pencil-square"></i> Polinomio Interpolador:
+                        </h5>
+                        <div class="math-expression mt-2">
+                            {{ pol_texto|safe }}
+                        </div>
+                    </div>
+
+                    <!-- Evaluation -->
+                    {% if resultado %}
+                    <div class="mb-4">
+                        <h5 class="text-success">
+                            <i class="bi bi-check-circle"></i> Evaluación en x = {{ valor_evaluar }}:
+                        </h5>
+                        <div class="mt-2">
+                            <h4 class="text-success">{{ resultado }}</h4>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Additional sections for authenticated users -->
+        {% if request.user.is_authenticated %}
+        {% if grafica_base64 %}
+        <div class="terminal-container mt-4">
+            <div class="terminal-header">
+                <div class="circle red"></div>
+                <div class="circle yellow"></div>
+                <div class="circle green"></div>
+                <span class="ms-2">Gráfica del Polinomio</span>
+            </div>
+            <div class="terminal-body text-center">
+                <img src="data:image/png;base64,{{ grafica_base64 }}" class="img-fluid" style="max-height: 400px;"
+                    alt="Gráfica del polinomio">
+            </div>
+        </div>
+        {% endif %}
+
+        {% if pasos %}
+        <div class="terminal-container mt-4">
+            <div class="terminal-header">
+                <div class="circle red"></div>
+                <div class="circle yellow"></div>
+                <div class="circle green"></div>
+                <span class="ms-2">Proceso Detallado</span>
+            </div>
+            <div class="terminal-body">
+                <div class="list-group list-group-numbered">
+                    {% for paso in pasos %}
+                    <div class="list-group-item bg-dark border-secondary">
+                        <div class="d-flex w-100 justify-content-between">
+                            <span class="text-success">{{ paso|safe }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if tabla %}
+        <div class="terminal-container mt-4">
+            <div class="terminal-header">
+                <div class="circle red"></div>
+                <div class="circle yellow"></div>
+                <div class="circle green"></div>
+                <span class="ms-2">Tabla de Diferencias Divididas</span>
+            </div>
+            <div class="terminal-body">
+                <div class="table-responsive">
+                    <table class="divided-differences-table">
+                        <thead>
+                            <tr>
+                                <th>x</th>
+                                <th>f(x)</th>
+                                {% for i in range_headers %}
+                                <th>Δ<sup>{{i}}</sup>f</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for fila in tabla %}
+                            <tr>
+                                {% for celda in fila %}
+                                <td>{{ celda }}</td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if historial %}
+        <div class="terminal-container mt-4">
+            <div class="terminal-header">
+                <div class="circle red"></div>
+                <div class="circle yellow"></div>
+                <div class="circle green"></div>
+                <span class="ms-2">Historial de Cálculos</span>
+            </div>
+            <div class="terminal-body">
+                <div class="list-group list-group-flush">
+                    {% for item in historial %}
+                    <div class="list-group-item historial-item bg-dark border-secondary" data-bs-toggle="collapse"
+                        href="#detalle-{{ forloop.counter }}">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ item.fecha|date:"d/m/Y H:i" }}</strong>
+                                <span class="badge bg-secondary ms-2">{{ item.puntos_x.split|length }} puntos</span>
+                            </div>
+                            <span class="badge bg-success">Ver detalles</span>
+                        </div>
+                        <div class="collapse mt-2" id="detalle-{{ forloop.counter }}">
+                            <div class="card card-body bg-secondary text-dark">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong><i class="bi bi-list-ul"></i> Puntos X:</strong><br>
+                                            <code>{{ item.puntos_x }}</code>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong><i class="bi bi-list-ul"></i> Puntos Y:</strong><br>
+                                            <code>{{ item.puntos_y }}</code>
+                                        </p>
+                                    </div>
+                                </div>
+                                <p><strong><i class="bi bi-calculator"></i> Polinomio:</strong><br>
+                                    {{ item.polinomio|safe }}
+                                </p>
+                                {% if item.valor_evaluado %}
+                                <p><strong><i class="bi bi-check-square"></i> Evaluación:</strong><br>
+                                    En x = {{ item.valor_evaluado }} → <strong>{{ item.resultado }}</strong>
+                                </p>
+                                {% endif %}
+                                <button class="btn btn-sm btn-success mt-2"
+                                    onclick="recuperarCalculo('{{ item.puntos_x }}', '{{ item.puntos_y }}', '{{ item.valor_evaluado }}')">
+                                    <i class="bi bi-arrow-repeat"></i> Repetir cálculo
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% else %}
+        {% if pol_texto %}
+        <div class="terminal-container mt-4">
+            <div class="terminal-header">
+                <div class="circle red"></div>
+                <div class="circle yellow"></div>
+                <div class="circle green"></div>
+                <span class="ms-2">Más Funcionalidades</span>
+            </div>
+            <div class="terminal-body">
+                <div class="alert alert-info">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <i class="bi bi-info-circle-fill fs-4"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5 class="alert-heading">¿Quieres ver más detalles?</h5>
+                            <p class="mb-0">Inicia sesión para acceder a la gráfica, pasos detallados y tabla de
+                                diferencias.</p>
+                            <div class="mt-3">
+                                <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-success">
+                                    <i class="bi bi-box-arrow-in-right"></i> Iniciar sesión
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+
+        <div class="mt-4 text-center">
+            <a href="{% url 'menu' %}" class="btn btn-secondary px-4">
+                <i class="bi bi-arrow-left"></i> Volver al menú
+            </a>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- MathJax para renderizar expresiones matemáticas -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <script>
+        function recuperarCalculo(puntos_x, puntos_y, valor_evaluar) {
+            document.getElementById('id_x_valores').value = puntos_x.trim();
+            document.getElementById('id_y_valores').value = puntos_y.trim();
+
+            if (valor_evaluar && valor_evaluar != 'None') {
+                document.getElementById('id_valor_evaluar').value = valor_evaluar;
+            } else {
+                document.getElementById('id_valor_evaluar').value = '';
+            }
+
+            // Mostrar notificación
+            const toast = document.createElement('div');
+            toast.className = 'position-fixed bottom-0 end-0 p-3';
+            toast.innerHTML = `
+                <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header bg-success text-dark">
+                        <strong class="me-auto">Datos recuperados</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        Los datos del cálculo han sido cargados en el formulario.
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(toast);
+
+            // Eliminar después de 3 segundos
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Efecto de escritura para inputs
+        document.querySelectorAll('.terminal-input').forEach(input => {
+            input.addEventListener('focus', function () {
+                this.style.boxShadow = '0 0 10px rgba(51, 255, 51, 0.8)';
+            });
+
+            input.addEventListener('blur', function () {
+                this.style.boxShadow = 'none';
+            });
+        });
+    </script>
+</body>
+
+</html>

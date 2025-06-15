@@ -23,11 +23,15 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="{% url 'documentacion' %}">Documentación</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Metodos</a></li>
-                    {% if request.session.usuario_id %}
+                    {% if request.user.is_authenticated %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            {{ request.session.usuario_nombre }}
+                            {% if request.user.first_name %}
+                            {{ request.user.first_name }} {{ request.user.last_name }}
+                            {% else %}
+                            {{ request.user.username }}
+                            {% endif %}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
@@ -61,7 +65,7 @@
                             <p>> Error de truncamiento</p>
                             <p>> Implementación del método</p>
                         </div>
-                        <a href="#">
+                        <a href="">
                             <span class="access-btn">ACCEDER AQUÍ <i class="bi bi-arrow-right"></i></span>
                         </a>
                     </div>
@@ -82,7 +86,7 @@
                             <p>> Tabla de diferencias</p>
                             <p>> Cálculo de coeficientes</p>
                         </div>
-                        <a href="#">
+                        <a href="{% url 'metodo_newton' %}">
                             <span class="access-btn">ACCEDER AQUÍ <i class="bi bi-arrow-right"></i></span>
                         </a>
                     </div>
