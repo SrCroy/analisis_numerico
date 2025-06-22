@@ -1,43 +1,49 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from .forms import UsuarioForm, LoginForm
+from .forms import RegistroUsuarioForm, LoginForm
+from .models import PerfilUsuario
 from django.contrib.auth.models import User
 
 def registro_usuario(request):
     if request.method == 'POST':
-        form = UsuarioForm(request.POST)
+        form = RegistroUsuarioForm(request.POST, request.FILES)
         if form.is_valid():
-            correo = form.cleaned_data['correo']
-            nombre = form.cleaned_data.get('nombre', '')
-            contrasena = form.cleaned_data['contrasena']
-            
-            # Verificar si el usuario ya existe
-            if User.objects.filter(username=correo).exists():
-                messages.error(request, 'Este correo ya está registrado')
-                return redirect('registro')
-            
-            # Crear usuario con Django auth
+            username = form.cleaned_data['username']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+
+            # Crear usuario
             user = User.objects.create_user(
-                username=correo,
-                email=correo,
-                password=contrasena,
-                first_name=nombre
+                username=username,
+                email=email,
+                password=password,
+                first_name=first_name,
+                last_name=last_name
             )
-            
-            # Autenticar y loguear al usuario directamente después del registro
-            user = authenticate(username=correo, password=contrasena)
+
+            # Crear perfil
+            PerfilUsuario.objects.create(
+                user=user,
+                carrera=form.cleaned_data['carrera'],
+                carnet=form.cleaned_data['carnet'],
+                ciclo=form.cleaned_data['ciclo'],
+                fotografia=form.cleaned_data.get('fotografia')
+            )
+
+            # Autenticar y loguear
+            user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                messages.success(request, f'¡Bienvenido {nombre}! Registro exitoso.')
+                messages.success(request, f'¡Bienvenido {first_name}! Registro exitoso.')
                 return redirect('index')
-            
     else:
-        form = UsuarioForm()
+        form = RegistroUsuarioForm()
     return render(request, 'usuarios/crear_usuario.html', {'form': form})
 
 def login_usuario(request):
-    # Si el usuario ya está autenticado, redirigir al index
     if request.user.is_authenticated:
         messages.info(request, 'Ya has iniciado sesión')
         return redirect('index')
@@ -47,13 +53,22 @@ def login_usuario(request):
         if form.is_valid():
             correo = form.cleaned_data['correo']
             contrasena = form.cleaned_data['contrasena']
-            user = authenticate(request, username=correo, password=contrasena)
+
+            # Buscar usuario por correo
+            try:
+                user_obj = User.objects.get(email=correo)
+                username = user_obj.username
+            except User.DoesNotExist:
+                username = None
+
+            if username:
+                user = authenticate(request, username=username, password=contrasena)
+            else:
+                user = None
             
             if user is not None:
                 login(request, user)
                 messages.success(request, f'Bienvenido {user.first_name or user.username}')
-                
-                # Redirigir a 'next' si existe en la URL
                 next_url = request.GET.get('next', 'index')
                 return redirect(next_url)
             else:

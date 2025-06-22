@@ -1,25 +1,27 @@
 from django import forms
-from .models import Usuario
+from django.contrib.auth.models import User
+from .models import PerfilUsuario
 
-class UsuarioForm(forms.ModelForm):
-    confirmar_contrasena = forms.CharField(widget=forms.PasswordInput(), label='Confirmar Contraseña')
+class RegistroUsuarioForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput, label='Contraseña')
+    confirmar_password = forms.CharField(widget=forms.PasswordInput, label='Confirmar Contraseña')
+    carrera = forms.CharField(max_length=100)
+    carnet = forms.CharField(max_length=20)
+    ciclo = forms.CharField(max_length=20)
+    fotografia = forms.ImageField(required=False)
 
     class Meta:
-        model = Usuario
-        fields = ['nombre', 'apellido', 'correo', 'contrasena']
-        widgets = {
-            'contrasena': forms.PasswordInput(),
-        }
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email']
 
     def clean(self):
         cleaned_data = super().clean()
-        contrasena = cleaned_data.get("contrasena")
-        confirmar = cleaned_data.get("confirmar_contrasena")
-
-        if contrasena != confirmar:
+        password = cleaned_data.get("password")
+        confirmar = cleaned_data.get("confirmar_password")
+        if password != confirmar:
             raise forms.ValidationError("Las contraseñas no coinciden")
-
+        return cleaned_data
 
 class LoginForm(forms.Form):
-    correo = forms.EmailField(label="Correo")
-    contrasena = forms.CharField(widget=forms.PasswordInput(), label="Contraseña")
+    correo = forms.CharField(label='Correo')
+    contrasena = forms.CharField(widget=forms.PasswordInput, label='Contraseña')

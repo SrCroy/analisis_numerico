@@ -1,10 +1,17 @@
 from django.db import models
+from django.contrib.auth.models import User
 
-class Usuario(models.Model):
-    nombre = models.CharField(max_length=50)
-    apellido = models.CharField(max_length=50)
-    correo = models.EmailField(unique=True)
-    contrasena = models.CharField(max_length=128)
+class PerfilUsuario(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    fotografia = models.ImageField(
+        upload_to='fotos_perfil/',
+        null=True,
+        blank=True,
+        default='fotos_perfil/default.png'  # Debes tener esta imagen en tu carpeta media
+    )
+    carrera = models.CharField(max_length=100)
+    carnet = models.CharField(max_length=20)
+    ciclo = models.CharField(max_length=20)
 
     def __str__(self):
-        return f'{self.nombre} {self.apellido}'
+        return f'{self.user.get_full_name()} ({self.carrera})'

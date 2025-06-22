@@ -1,4 +1,5 @@
 {% load static %}
+{% load widget_tweaks %}
 <!DOCTYPE html>
 <html lang="es">
 
@@ -56,7 +57,6 @@
                 <span class="ms-2">Login</span>
             </div>
             <div class="terminal">
-                {% load widget_tweaks %}
 
                 <form method="POST" action="{% url 'login' %}">
                     {% csrf_token %}
@@ -69,20 +69,19 @@
                     </div>
                     {% endif %}
 
+                    {% for field in form %}
                     <div class="mb-3">
-                        <label for="id_correo" class="form-label">Correo:</label>
-                        {% render_field form.correo class="form-control" placeholder="Correo electrónico" %}
-                        {% if form.correo.errors %}
-                        <div class="text-danger small">{{ form.correo.errors }}</div>
+                        <label class="form-label">{{ field.label }}:</label>
+                        {{ field|add_class:"form-control" }}
+                        {% if field.errors %}
+                        <ul class="errorlist">
+                            {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
                         {% endif %}
                     </div>
-                    <div class="mb-3">
-                        <label for="id_contrasena" class="form-label">Contraseña:</label>
-                        {% render_field form.contrasena class="form-control" placeholder="Contraseña" %}
-                        {% if form.contrasena.errors %}
-                        <div class="text-danger small">{{ form.contrasena.errors }}</div>
-                        {% endif %}
-                    </div>
+                    {% endfor %}
 
                     <button type="submit" class="btn btn-terminal w-100 mt-3">Acceder</button>
                 </form>
@@ -99,7 +98,7 @@
     <!-- Footer -->
     <footer class="bg-dark text-white text-center py-3" style="height: 80px;">
         <div>
-            <p class="mb-0">© 2023 Análisis Numérico. Todos los derechos reservados.</p>
+            <p class="mb-0">© 2025 Análisis Numérico. Todos los derechos reservados.</p>
             <p class="mb-0">Desarrollado por UES</p>
         </div>
     </footer>
