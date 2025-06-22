@@ -1,0 +1,226 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil del Usuario</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .terminal,
+        .history-terminal {
+            background-color: #1e1e1e;
+            color: #dcdcdc;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background-color: #333;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            margin: -1.5rem -1.5rem 1rem;
+        }
+
+        .circle {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .red {
+            background-color: #ff5f56;
+        }
+
+        .yellow {
+            background-color: #ffbd2e;
+        }
+
+        .green {
+            background-color: #27c93f;
+        }
+
+        .terminal-header span {
+            color: #aaa;
+            margin-left: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .command-line {
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 2px solid #ccc;
+            margin-bottom: 1rem;
+            object-fit: cover;
+        }
+
+        .btn-edit {
+            background-color: #27c93f;
+            color: #fff;
+        }
+
+        .btn-edit:hover {
+            background-color: #1f9e33;
+        }
+
+        .table-dark {
+            background-color: #2d2d2d;
+            color: #fff;
+        }
+
+        .table-dark thead th {
+            border-bottom: 2px solid #666;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #3a3a3a;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Tu NAVBAR personalizado -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="#">Análisis Numérico</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'documentacion' %}">Documentación</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Diferencias Divididas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <main class="container my-5">
+        <div class="terminal">
+            <div class="terminal-header">
+                <div class="circle red"></div>
+                <div class="circle yellow"></div>
+                <div class="circle green"></div>
+                <span>usuario_info.exe</span>
+            </div>
+            <div class="terminal-content text-center">
+                <h2>Datos del Usuario</h2>
+                <img src="{% if perfil.fotografia and perfil.fotografia.url %}{{ perfil.fotografia.url }}{% else %}/media/fotos_perfil/default.png{% endif %}"
+                    alt="Fotografía del usuario" class="profile-img">
+                <p class="command-line"><strong>Usuario:</strong> {{ perfil.user.username }}</p>
+                <p class="command-line"><strong>Correo:</strong> {{ perfil.user.email }}</p>
+                <p class="command-line"><strong>Nombre:</strong> {{ perfil.user.first_name }}</p>
+                <p class="command-line"><strong>Apellido:</strong> {{ perfil.user.last_name }}</p>
+                <p class="command-line"><strong>Carnet:</strong> {{ perfil.carnet }}</p>
+                <p class="command-line"><strong>Ciclo:</strong> {{ perfil.ciclo }}</p>
+                <p class="command-line"><strong>Carrera:</strong> {{ perfil.carrera }}</p>
+                <p class="command-line"><strong>Último acceso:</strong> {{ perfil.user.last_login|date:"Y-m-d H:i:s" }}
+                </p>
+                <div class="text-center mt-4">
+                    <a href="{% url 'editar_perfil' %}" class="btn-edit">
+                        <i class="bi bi-pencil-square me-2"></i>Editar Perfil
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Sección de Historial de ejercicios Newton -->
+    <section class="container history-terminal">
+        <h3><i class="bi bi-clock-history me-2"></i>Historial de Ejercicios - Diferencias Divididas de Newton</h3>
+        <div class="table-responsive">
+            <table class="table table-dark table-hover">
+                <thead>
+                    <tr>
+                        <th><i class="bi bi-calendar-event"></i> Fecha</th>
+                        <th><i class="bi bi-activity"></i> Puntos X</th>
+                        <th><i class="bi bi-activity"></i> Puntos Y</th>
+                        <th><i class="bi bi-info-circle"></i> Polinomio</th>
+                        <th><i class="bi bi-hourglass-split"></i> Valor Evaluado</th>
+                        <th><i class="bi bi-check2-circle"></i> Resultado</th>
+                        <th><i class="bi bi-list-task"></i> Pasos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ejercicio in historial_newton %}
+                    <tr>
+                        <td>{{ ejercicio.fecha|date:"Y-m-d H:i" }}</td>
+                        <td>{{ ejercicio.puntos_x }}</td>
+                        <td>{{ ejercicio.puntos_y }}</td>
+                        <td>{{ ejercicio.polinomio }}</td>
+                        <td>
+                            {% if ejercicio.valor_evaluado is not None %}
+                            {{ ejercicio.valor_evaluado }}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if ejercicio.resultado is not None %}
+                            {{ ejercicio.resultado }}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-secondary" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#pasos{{ forloop.counter }}" aria-expanded="false"
+                                aria-controls="pasos{{ forloop.counter }}">
+                                Ver pasos
+                            </button>
+                            <div class="collapse mt-2" id="pasos{{ forloop.counter }}">
+                                <div class="card card-body bg-dark text-light">
+                                    <pre style="white-space: pre-wrap;">{{ ejercicio.pasos }}</pre>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center">No hay ejercicios registrados aún.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Tu FOOTER personalizado -->
+    <footer class="bg-dark text-white text-center py-4 mt-5">
+        <div class="container">
+            <p class="mb-0">© 2025 Análisis Numérico. Todos los derechos reservados.</p>
+            <p class="mb-0">Desarrollado por UES</p>
+        </div>
+    </footer>
+
+    <!-- Scripts Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

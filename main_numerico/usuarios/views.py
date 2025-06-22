@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
-from .forms import RegistroUsuarioForm, LoginForm
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from .forms import RegistroUsuarioForm, LoginForm, EditarPerfilForm
 from .models import PerfilUsuario
 from django.contrib.auth.models import User
+from metodo_df_divididas.models import HistorialNewton
+from django.contrib.auth.decorators import login_required
 
 def registro_usuario(request):
     if request.method == 'POST':
@@ -90,3 +92,38 @@ def logout_usuario(request):
         messages.warning(request, 'No habías iniciado sesión')
     
     return redirect('login')
+
+@login_required
+def perfil_usuario(request):
+    perfil = PerfilUsuario.objects.get(user=request.user)
+    historial_newton = HistorialNewton.objects.filter(usuario_id=request.user.id).order_by('-fecha')
+    return render(request, 'usuarios/perfil.html', {
+        'perfil': perfil,
+        'historial_newton': historial_newton
+    })
+
+@login_required
+def editar_perfil(request):
+    perfil = PerfilUsuario.objects.get(user=request.user)
+    if request.method == 'POST':
+        form = EditarPerfilForm(request.POST, request.FILES, instance=perfil)
+        if form.is_valid():
+            perfil = form.save(commit=False)
+            perfil.user.first_name = form.cleaned_data['first_name']
+            perfil.user.last_name = form.cleaned_data['last_name']
+            password = form.cleaned_data.get('password')
+            if password:
+                perfil.user.set_password(password)
+                perfil.user.save()
+                update_session_auth_hash(request, perfil.user)
+            else:
+                perfil.user.save()
+            perfil.save()
+            messages.success(request, 'Perfil actualizado correctamente.')
+            return redirect('index')  # <-- Aquí redirige al index
+    else:
+        form = EditarPerfilForm(instance=perfil, initial={
+            'first_name': request.user.first_name,
+            'last_name': request.user.last_name,
+        })
+    return render(request, 'usuarios/editar_perfil.html', {'form': form, 'perfil': perfil})

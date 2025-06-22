@@ -2,6 +2,9 @@ body {
     background-color: #121212;
     color: #33ff33;
     font-family: 'Courier New', monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 html,
@@ -17,7 +20,7 @@ body {
     flex-direction: column;
 }
 
-.container {
+main {
     flex: 1 0 auto;
 }
 

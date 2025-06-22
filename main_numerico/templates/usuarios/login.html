@@ -11,9 +11,9 @@
     <link rel="stylesheet" href="{% static 'login/styles.css'%}">
 </head>
 
-<body style="height: 100vh; overflow: hidden;">
+<body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand fw-bold" href="{% url 'index' %}">Análisis Numérico</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -28,13 +28,10 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            {% if request.user.first_name %}
-                            {{ request.user.first_name }} {{ request.user.last_name }}
-                            {% else %}
                             {{ request.user.username }}
-                            {% endif %}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'perfil_usuario' %}">Ver Perfil</a></li>
                             <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
                         </ul>
                     </li>
@@ -46,54 +43,56 @@
         </div>
     </nav>
 
-    <!-- Login Terminal centrado -->
-    <div class="d-flex flex-column justify-content-center align-items-center"
-        style="height: calc(100vh - 56px - 80px);">
-        <div class="w-100" style="max-width: 600px;">
-            <div class="terminal-header">
-                <div class="circle red"></div>
-                <div class="circle yellow"></div>
-                <div class="circle green"></div>
-                <span class="ms-2">Login</span>
-            </div>
-            <div class="terminal">
+    <main class="d-flex flex-column justify-content-center align-items-center flex-grow-1">
+        <!-- Login Terminal centrado -->
+        <div class="d-flex flex-column justify-content-center align-items-center"
+            style="height: calc(100vh - 56px - 80px);">
+            <div class="w-100" style="max-width: 600px;">
+                <div class="terminal-header">
+                    <div class="circle red"></div>
+                    <div class="circle yellow"></div>
+                    <div class="circle green"></div>
+                    <span class="ms-2">Login</span>
+                </div>
+                <div class="terminal">
 
-                <form method="POST" action="{% url 'login' %}">
-                    {% csrf_token %}
+                    <form method="POST" action="{% url 'login' %}">
+                        {% csrf_token %}
 
-                    {% if messages %}
-                    <div>
-                        {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-
-                    {% for field in form %}
-                    <div class="mb-3">
-                        <label class="form-label">{{ field.label }}:</label>
-                        {{ field|add_class:"form-control" }}
-                        {% if field.errors %}
-                        <ul class="errorlist">
-                            {% for error in field.errors %}
-                            <li>{{ error }}</li>
+                        {% if messages %}
+                        <div>
+                            {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
                             {% endfor %}
-                        </ul>
+                        </div>
                         {% endif %}
+
+                        {% for field in form %}
+                        <div class="mb-3">
+                            <label class="form-label">{{ field.label }}:</label>
+                            {{ field|add_class:"form-control" }}
+                            {% if field.errors %}
+                            <ul class="errorlist">
+                                {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+
+                        <button type="submit" class="btn btn-terminal w-100 mt-3">Acceder</button>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <span>¿No tienes un usuario? </span>
+                        <a href="{% url 'registro' %}" style="color: #33ff33; text-decoration: underline;">Haz clic aquí
+                            para crear uno</a>
                     </div>
-                    {% endfor %}
-
-                    <button type="submit" class="btn btn-terminal w-100 mt-3">Acceder</button>
-                </form>
-
-                <div class="text-center mt-3">
-                    <span>¿No tienes un usuario? </span>
-                    <a href="{% url 'registro' %}" style="color: #33ff33; text-decoration: underline;">Haz clic aquí
-                        para crear uno</a>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <!-- Footer -->
     <footer class="bg-dark text-white text-center py-3" style="height: 80px;">

@@ -13,27 +13,25 @@
 
 <body>
     <!-- Navbar con color gris oscuro (#212529) -->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow fixed-top">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="{% url 'index' %}">Análisis Numérico</a>
+            <a class="navbar-brand fw-bold" href="{% url 'index'%}">Análisis Numérico</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'documentacion' %}">Documentación</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Metodos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Documentación</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'menu' %}">Métodos</a></li>
+
                     {% if request.user.is_authenticated %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            {% if request.user.first_name %}
-                            {{ request.user.first_name }} {{ request.user.last_name }}
-                            {% else %}
                             {{ request.user.username }}
-                            {% endif %}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'perfil_usuario' %}">Ver Perfil</a></li>
                             <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
                         </ul>
                     </li>
