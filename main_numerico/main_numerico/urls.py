@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('metodo_df_divididas.urls')),  # <-- Cambia 'index/' por ''
     path('usuarios/', include('usuarios.urls')),
+    path('', include('metodo_dn.urls')),
 ]
