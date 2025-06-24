@@ -5,7 +5,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Derivación Numérica</title>
+    <title>Diferenciacion Numérica</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
@@ -22,9 +22,8 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#">Documentación</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'documentacion' %}">Documentación</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'menu' %}">Métodos</a></li>
-
                     {% if request.user.is_authenticated %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -57,12 +56,9 @@
             </div>
             <p><strong>Función:</strong> <code>{{ historial_actual.function }}</code></p>
             <p><strong>Derivada Exacta:</strong> {{ historial_actual.derivada_exacta|floatformat:6 }}</p>
-            <p><strong>Forward:</strong> {{ historial_actual.derivada_forward|floatformat:6 }} (Error: {{
-                historial_actual.error_forward|floatformat:4 }}%)</p>
-            <p><strong>Backward:</strong> {{ historial_actual.derivada_backward|floatformat:6 }} (Error: {{
-                historial_actual.error_backward|floatformat:4 }}%)</p>
-            <p><strong>Central:</strong> {{ historial_actual.derivada_central|floatformat:6 }} (Error: {{
-                historial_actual.error_central|floatformat:4 }}%)</p>
+            <p><strong>Forward:</strong> {{ historial_actual.derivada_forward|floatformat:6 }} (Error: {{ historial_actual.error_forward|floatformat:4 }}%)</p>
+            <p><strong>Backward:</strong> {{ historial_actual.derivada_backward|floatformat:6 }} (Error: {{ historial_actual.error_backward|floatformat:4 }}%)</p>
+            <p><strong>Central:</strong> {{ historial_actual.derivada_central|floatformat:6 }} (Error: {{ historial_actual.error_central|floatformat:4 }}%)</p>
 
             <h5>Procedimiento Forward:</h5>
             <code>{{ historial_actual.formula_forward }}</code> → {{ historial_actual.pasos_forward }}
@@ -92,12 +88,9 @@
                 <span class="ms-2 fw-bold">Resultado del cálculo</span>
             </div>
             <p><strong>Derivada Exacta:</strong> {{ derivada_exacta|floatformat:6 }}</p>
-            <p><strong>Forward:</strong> {{ derivada_forward|floatformat:6 }} (Error: {{ error_forward|floatformat:4
-                }}%)</p>
-            <p><strong>Backward:</strong> {{ derivada_backward|floatformat:6 }} (Error: {{ error_backward|floatformat:4
-                }}%)</p>
-            <p><strong>Central:</strong> {{ derivada_central|floatformat:6 }} (Error: {{ error_central|floatformat:4
-                }}%)</p>
+            <p><strong>Forward:</strong> {{ derivada_forward|floatformat:6 }} (Error: {{ error_forward|floatformat:4 }}%)</p>
+            <p><strong>Backward:</strong> {{ derivada_backward|floatformat:6 }} (Error: {{ error_backward|floatformat:4 }}%)</p>
+            <p><strong>Central:</strong> {{ derivada_central|floatformat:6 }} (Error: {{ error_central|floatformat:4 }}%)</p>
 
             <div class="alert alert-info mt-3">
                 <p>Inicia sesión para ver fórmulas, pasos y la gráfica de la función.</p>
@@ -186,7 +179,6 @@
             </div>
         </div>
         {% endif %}
-
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -83,7 +83,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'analisis_numerico',  # Nombre de la base de datos
         'USER': 'root',
-        'PASSWORD': '1234',
+        'PASSWORD': '',
         'HOST': 'localhost',  # o la IP del servidor si está en otro lugar
         'PORT': '3306',        # puerto por defecto de MariaDB/MySQL
         'OPTIONS': {

@@ -95,7 +95,7 @@ def logout_usuario(request):
 
 @login_required
 def perfil_usuario(request):
-    perfil = PerfilUsuario.objects.get(user=request.user)
+    perfil, creado = PerfilUsuario.objects.get_or_create(user=request.user)
     historial_newton = HistorialNewton.objects.filter(usuario_id=request.user.id).order_by('-fecha')
     return render(request, 'usuarios/perfil.html', {
         'perfil': perfil,
@@ -120,7 +120,7 @@ def editar_perfil(request):
                 perfil.user.save()
             perfil.save()
             messages.success(request, 'Perfil actualizado correctamente.')
-            return redirect('index')  # <-- Aquí redirige al index
+            return redirect('index')
     else:
         form = EditarPerfilForm(instance=perfil, initial={
             'first_name': request.user.first_name,
