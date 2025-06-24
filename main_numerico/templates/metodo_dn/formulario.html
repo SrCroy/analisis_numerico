@@ -14,28 +14,30 @@
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark shadow">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="{% url 'index' %}">Análisis Numérico</a>
+            <a class="navbar-brand fw-bold" href="{% url 'index'%}">Análisis Numérico</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'documentacion' %}">Documentación</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Documentación</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'menu' %}">Métodos</a></li>
+
                     {% if request.user.is_authenticated %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                {{ request.user.first_name|default:request.user.username }}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
-                            </ul>
-                        </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ request.user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'perfil_usuario' %}">Ver Perfil</a></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
+                        </ul>
+                    </li>
                     {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a></li>
                     {% endif %}
                 </ul>
             </div>
@@ -46,57 +48,64 @@
 
         <!-- Mostrar resultado actual con pasos y gráfica para usuarios logueados -->
         {% if historial_actual %}
-            <div class="terminal-container mb-4 p-3 border rounded">
-                <div class="terminal-header mb-3">
-                    <div class="circle red"></div>
-                    <div class="circle yellow"></div>
-                    <div class="circle green"></div>
-                    <span class="ms-2 fw-bold">Resultado del último cálculo</span>
-                </div>
-                <p><strong>Función:</strong> <code>{{ historial_actual.function }}</code></p>
-                <p><strong>Derivada Exacta:</strong> {{ historial_actual.derivada_exacta|floatformat:6 }}</p>
-                <p><strong>Forward:</strong> {{ historial_actual.derivada_forward|floatformat:6 }} (Error: {{ historial_actual.error_forward|floatformat:4 }}%)</p>
-                <p><strong>Backward:</strong> {{ historial_actual.derivada_backward|floatformat:6 }} (Error: {{ historial_actual.error_backward|floatformat:4 }}%)</p>
-                <p><strong>Central:</strong> {{ historial_actual.derivada_central|floatformat:6 }} (Error: {{ historial_actual.error_central|floatformat:4 }}%)</p>
-
-                <h5>Procedimiento Forward:</h5>
-                <code>{{ historial_actual.formula_forward }}</code> → {{ historial_actual.pasos_forward }}
-
-                <h5>Procedimiento Backward:</h5>
-                <code>{{ historial_actual.formula_backward }}</code> → {{ historial_actual.pasos_backward }}
-
-                <h5>Procedimiento Central:</h5>
-                <code>{{ historial_actual.formula_central }}</code> → {{ historial_actual.pasos_central }}
-
-                {% if grafica_base64 %}
-                    <div class="mt-3 text-center">
-                        <img src="data:image/png;base64,{{ grafica_base64 }}" alt="Gráfica función y derivada" class="img-fluid" style="max-height: 400px;">
-                    </div>
-                {% endif %}
+        <div class="terminal-container mb-4 p-3 border rounded">
+            <div class="terminal-header mb-3">
+                <div class="circle red"></div>
+                <div class="circle yellow"></div>
+                <div class="circle green"></div>
+                <span class="ms-2 fw-bold">Resultado del último cálculo</span>
             </div>
+            <p><strong>Función:</strong> <code>{{ historial_actual.function }}</code></p>
+            <p><strong>Derivada Exacta:</strong> {{ historial_actual.derivada_exacta|floatformat:6 }}</p>
+            <p><strong>Forward:</strong> {{ historial_actual.derivada_forward|floatformat:6 }} (Error: {{
+                historial_actual.error_forward|floatformat:4 }}%)</p>
+            <p><strong>Backward:</strong> {{ historial_actual.derivada_backward|floatformat:6 }} (Error: {{
+                historial_actual.error_backward|floatformat:4 }}%)</p>
+            <p><strong>Central:</strong> {{ historial_actual.derivada_central|floatformat:6 }} (Error: {{
+                historial_actual.error_central|floatformat:4 }}%)</p>
+
+            <h5>Procedimiento Forward:</h5>
+            <code>{{ historial_actual.formula_forward }}</code> → {{ historial_actual.pasos_forward }}
+
+            <h5>Procedimiento Backward:</h5>
+            <code>{{ historial_actual.formula_backward }}</code> → {{ historial_actual.pasos_backward }}
+
+            <h5>Procedimiento Central:</h5>
+            <code>{{ historial_actual.formula_central }}</code> → {{ historial_actual.pasos_central }}
+
+            {% if grafica_base64 %}
+            <div class="mt-3 text-center">
+                <img src="data:image/png;base64,{{ grafica_base64 }}" alt="Gráfica función y derivada" class="img-fluid"
+                    style="max-height: 400px;">
+            </div>
+            {% endif %}
+        </div>
         {% endif %}
 
         <!-- Mostrar resultado básico para usuarios anónimos -->
         {% if not user_authenticated and derivada_exacta %}
-            <div class="terminal-container mb-4 p-3 border rounded">
-                <div class="terminal-header mb-3">
-                    <div class="circle red"></div>
-                    <div class="circle yellow"></div>
-                    <div class="circle green"></div>
-                    <span class="ms-2 fw-bold">Resultado del cálculo</span>
-                </div>
-                <p><strong>Derivada Exacta:</strong> {{ derivada_exacta|floatformat:6 }}</p>
-                <p><strong>Forward:</strong> {{ derivada_forward|floatformat:6 }} (Error: {{ error_forward|floatformat:4 }}%)</p>
-                <p><strong>Backward:</strong> {{ derivada_backward|floatformat:6 }} (Error: {{ error_backward|floatformat:4 }}%)</p>
-                <p><strong>Central:</strong> {{ derivada_central|floatformat:6 }} (Error: {{ error_central|floatformat:4 }}%)</p>
-
-                <div class="alert alert-info mt-3">
-                    <p>Inicia sesión para ver fórmulas, pasos y la gráfica de la función.</p>
-                    <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-success">
-                        <i class="bi bi-box-arrow-in-right"></i> Iniciar sesión
-                    </a>
-                </div>
+        <div class="terminal-container mb-4 p-3 border rounded">
+            <div class="terminal-header mb-3">
+                <div class="circle red"></div>
+                <div class="circle yellow"></div>
+                <div class="circle green"></div>
+                <span class="ms-2 fw-bold">Resultado del cálculo</span>
             </div>
+            <p><strong>Derivada Exacta:</strong> {{ derivada_exacta|floatformat:6 }}</p>
+            <p><strong>Forward:</strong> {{ derivada_forward|floatformat:6 }} (Error: {{ error_forward|floatformat:4
+                }}%)</p>
+            <p><strong>Backward:</strong> {{ derivada_backward|floatformat:6 }} (Error: {{ error_backward|floatformat:4
+                }}%)</p>
+            <p><strong>Central:</strong> {{ derivada_central|floatformat:6 }} (Error: {{ error_central|floatformat:4
+                }}%)</p>
+
+            <div class="alert alert-info mt-3">
+                <p>Inicia sesión para ver fórmulas, pasos y la gráfica de la función.</p>
+                <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-success">
+                    <i class="bi bi-box-arrow-in-right"></i> Iniciar sesión
+                </a>
+            </div>
+        </div>
         {% endif %}
 
         <!-- Formulario -->
@@ -134,50 +143,53 @@
 
         <!-- Historial de cálculos para usuarios logueados -->
         {% if user_authenticated and historial_usuario %}
-            <div class="terminal-container mt-5">
-                <div class="terminal-header">
-                    <div class="circle red"></div>
-                    <div class="circle yellow"></div>
-                    <div class="circle green"></div>
-                    <span class="ms-2">Historial de Cálculos Recientes</span>
-                </div>
-                <div class="terminal-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>Función</th>
-                                    <th>Valor x</th>
-                                    <th>h</th>
-                                    <th>Derivada Exacta</th>
-                                    <th>Forward</th>
-                                    <th>Backward</th>
-                                    <th>Central</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for item in historial_usuario %}
-                                <tr>
-                                    <td><code>{{ item.function }}</code></td>
-                                    <td>{{ item.x_value }}</td>
-                                    <td>{{ item.h_value }}</td>
-                                    <td>{{ item.derivada_exacta|floatformat:6 }}</td>
-                                    <td>{{ item.derivada_forward|floatformat:6 }}</td>
-                                    <td>{{ item.derivada_backward|floatformat:6 }}</td>
-                                    <td>{{ item.derivada_central|floatformat:6 }}</td>
-                                </tr>
-                                {% empty %}
-                                <tr><td colspan="7" class="text-center">No hay cálculos previos.</td></tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+        <div class="terminal-container mt-5">
+            <div class="terminal-header">
+                <div class="circle red"></div>
+                <div class="circle yellow"></div>
+                <div class="circle green"></div>
+                <span class="ms-2">Historial de Cálculos Recientes</span>
+            </div>
+            <div class="terminal-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Función</th>
+                                <th>Valor x</th>
+                                <th>h</th>
+                                <th>Derivada Exacta</th>
+                                <th>Forward</th>
+                                <th>Backward</th>
+                                <th>Central</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in historial_usuario %}
+                            <tr>
+                                <td><code>{{ item.function }}</code></td>
+                                <td>{{ item.x_value }}</td>
+                                <td>{{ item.h_value }}</td>
+                                <td>{{ item.derivada_exacta|floatformat:6 }}</td>
+                                <td>{{ item.derivada_forward|floatformat:6 }}</td>
+                                <td>{{ item.derivada_backward|floatformat:6 }}</td>
+                                <td>{{ item.derivada_central|floatformat:6 }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center">No hay cálculos previos.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
+        </div>
         {% endif %}
 
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
