@@ -16,7 +16,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="{% url 'index'%}">Análisis Numérico</a>
+            <a class="navbar-brand fw-bold" href="{% url 'index' %}">Análisis Numérico</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -32,12 +32,22 @@
                             {{ request.user.username }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{% url 'perfil_usuario' %}">Ver Perfil</a></li>
-                            <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'usuarios:perfil_usuario' %}">
+                                    Ver Perfil
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'usuarios:logout' %}">
+                                    Cerrar sesión
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     {% else %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'usuarios:login' %}">Iniciar Sesión</a>
+                    </li>
                     {% endif %}
                 </ul>
             </div>
@@ -54,35 +64,33 @@
                 <span class="ms-2">Diferencias Divididas de Newton</span>
             </div>
             <div class="terminal-body">
-                <div class="mb-4">
-                    <form method="post" class="row g-3">
-                        {% csrf_token %}
-                        <div class="col-md-4">
-                            <label for="id_x_valores" class="form-label">Valores de x (separados por coma):</label>
-                            <input type="text" name="x_valores" id="id_x_valores" class="form-control terminal-input"
-                                placeholder="1, 2, 3, 4" value="{{ form.x_valores.value|default_if_none:'' }}">
-                            <div class="form-text">Ejemplo: 1, 2, 3, 4</div>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="id_y_valores" class="form-label">Valores de y (separados por coma):</label>
-                            <input type="text" name="y_valores" id="id_y_valores" class="form-control terminal-input"
-                                placeholder="5, 7, 9, 11" value="{{ form.y_valores.value|default_if_none:'' }}">
-                            <div class="form-text">Ejemplo: 5, 7, 9, 11</div>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="id_valor_evaluar" class="form-label">Valor de x a evaluar (opcional):</label>
-                            <input type="number" step="any" name="valor_evaluar" id="id_valor_evaluar"
-                                class="form-control terminal-input" placeholder="2.5"
-                                value="{{ form.valor_evaluar.value|default_if_none:'' }}">
-                            <div class="form-text">Ejemplo: 2.5</div>
-                        </div>
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-calculator"></i> Calcular
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                <form method="post" class="row g-3">
+                    {% csrf_token %}
+                    <div class="col-md-4">
+                        <label for="id_x_valores" class="form-label">Valores de x (separados por coma):</label>
+                        <input type="text" name="x_valores" id="id_x_valores" class="form-control terminal-input"
+                            placeholder="1, 2, 3, 4" value="{{ form.x_valores.value|default_if_none:'' }}">
+                        <div class="form-text">Ejemplo: 1, 2, 3, 4</div>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="id_y_valores" class="form-label">Valores de y (separados por coma):</label>
+                        <input type="text" name="y_valores" id="id_y_valores" class="form-control terminal-input"
+                            placeholder="5, 7, 9, 11" value="{{ form.y_valores.value|default_if_none:'' }}">
+                        <div class="form-text">Ejemplo: 5, 7, 9, 11</div>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="id_valor_evaluar" class="form-label">Valor de x a evaluar (opcional):</label>
+                        <input type="number" step="any" name="valor_evaluar" id="id_valor_evaluar"
+                            class="form-control terminal-input" placeholder="2.5"
+                            value="{{ form.valor_evaluar.value|default_if_none:'' }}">
+                        <div class="form-text">Ejemplo: 2.5</div>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-calculator"></i> Calcular
+                        </button>
+                    </div>
+                </form>
 
                 <!-- Results section -->
                 {% if pol_texto %}
@@ -143,15 +151,11 @@
                 <span class="ms-2">Proceso Detallado</span>
             </div>
             <div class="terminal-body">
-                <div class="list-group list-group-numbered">
+                <ul class="list-group list-group-numbered">
                     {% for paso in pasos %}
-                    <div class="list-group-item bg-dark border-secondary">
-                        <div class="d-flex w-100 justify-content-between">
-                            <span class="text-success">{{ paso|safe }}</span>
-                        </div>
-                    </div>
+                    <li class="list-group-item bg-dark text-white">{{ paso|safe }}</li>
                     {% endfor %}
-                </div>
+                </ul>
             </div>
         </div>
         {% endif %}
@@ -166,13 +170,13 @@
             </div>
             <div class="terminal-body">
                 <div class="table-responsive">
-                    <table class="divided-differences-table">
-                        <thead>
+                    <table class="table table-striped table-bordered">
+                        <thead class="table-dark">
                             <tr>
                                 <th>x</th>
                                 <th>f(x)</th>
                                 {% for i in range_headers %}
-                                <th>Δ<sup>{{i}}</sup>f</th>
+                                <th>Δ<sup>{{ i }}</sup></th>
                                 {% endfor %}
                             </tr>
                         </thead>
@@ -190,91 +194,14 @@
             </div>
         </div>
         {% endif %}
-
-        {% if historial %}
-        <div class="terminal-container mt-4">
-            <div class="terminal-header">
-                <div class="circle red"></div>
-                <div class="circle yellow"></div>
-                <div class="circle green"></div>
-                <span class="ms-2">Historial de Cálculos</span>
-            </div>
-            <div class="terminal-body">
-                <div class="list-group list-group-flush">
-                    {% for item in historial %}
-                    <div class="list-group-item historial-item bg-dark border-secondary" data-bs-toggle="collapse"
-                        href="#detalle-{{ forloop.counter }}">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <strong>{{ item.fecha|date:"d/m/Y H:i" }}</strong>
-                                <span class="badge bg-secondary ms-2">{{ item.puntos_x.split|length }} puntos</span>
-                            </div>
-                            <span class="badge bg-success">Ver detalles</span>
-                        </div>
-                        <div class="collapse mt-2" id="detalle-{{ forloop.counter }}">
-                            <div class="card card-body bg-secondary text-dark">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p><strong><i class="bi bi-list-ul"></i> Puntos X:</strong><br>
-                                            <code>{{ item.puntos_x }}</code>
-                                        </p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p><strong><i class="bi bi-list-ul"></i> Puntos Y:</strong><br>
-                                            <code>{{ item.puntos_y }}</code>
-                                        </p>
-                                    </div>
-                                </div>
-                                <p><strong><i class="bi bi-calculator"></i> Polinomio:</strong><br>
-                                    {{ item.polinomio|safe }}
-                                </p>
-                                {% if item.valor_evaluado %}
-                                <p><strong><i class="bi bi-check-square"></i> Evaluación:</strong><br>
-                                    En x = {{ item.valor_evaluado }} → <strong>{{ item.resultado }}</strong>
-                                </p>
-                                {% endif %}
-                                <button class="btn btn-sm btn-success mt-2"
-                                    onclick="recuperarCalculo('{{ item.puntos_x }}', '{{ item.puntos_y }}', '{{ item.valor_evaluado }}')">
-                                    <i class="bi bi-arrow-repeat"></i> Repetir cálculo
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-        {% endif %}
         {% else %}
-        {% if pol_texto %}
-        <div class="terminal-container mt-4">
-            <div class="terminal-header">
-                <div class="circle red"></div>
-                <div class="circle yellow"></div>
-                <div class="circle green"></div>
-                <span class="ms-2">Más Funcionalidades</span>
-            </div>
-            <div class="terminal-body">
-                <div class="alert alert-info">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0">
-                            <i class="bi bi-info-circle-fill fs-4"></i>
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <h5 class="alert-heading">¿Quieres ver más detalles?</h5>
-                            <p class="mb-0">Inicia sesión para acceder a la gráfica, pasos detallados y tabla de
-                                diferencias.</p>
-                            <div class="mt-3">
-                                <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-success">
-                                    <i class="bi bi-box-arrow-in-right"></i> Iniciar sesión
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="alert alert-info mt-4">
+            <h5><i class="bi bi-info-circle"></i> ¿Quieres ver más detalles?</h5>
+            <p>Inicia sesión para acceder a la gráfica, pasos detallados y tabla de diferencias.</p>
+            <a href="{% url 'usuarios:login' %}?next={{ request.path }}" class="btn btn-success">
+                <i class="bi bi-box-arrow-in-right"></i> Iniciar sesión
+            </a>
         </div>
-        {% endif %}
         {% endif %}
 
         <div class="mt-4 text-center">
@@ -284,12 +211,19 @@
         </div>
     </div>
 
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-4 mt-5">
+        <div class="container">
+            <p class="mb-0">© 2025 Análisis Numérico. Todos los derechos reservados.</p>
+            <p class="mb-0">Desarrollado por UES</p>
+        </div>
+    </footer>
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- MathJax para renderizar expresiones matemáticas -->
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
     <script src="{% static 'metodo_newton/main.js' %}"></script>
 </body>
 

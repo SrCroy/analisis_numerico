@@ -1,12 +1,20 @@
-# filepath: /home/croy/Documentos/analisisNumerico/final/analisis_numerico/main_numerico/metodo_df_divididas/urls.py
+# filepath: main_numerico/metodo_df_divididas/urls.py
+
 from django.urls import path
-from . import views
+from .views import index, documentacion, menu, metodo_newton
+
+app_name = 'metodo_df_divididas'
 
 urlpatterns = [
-    path('', views.index, name='index'),
-    path('index', views.index),
-    path('index/', views.index),
-    path('documentacion/', views.documentacion, name='documentacion'),
-    path('menu/', views.menu, name='menu'),
-    path('newton/', views.metodo_newton, name='metodo_newton'),
+    # GET /divididas/                → vista index()
+    path('', index, name='index'),
+
+    # GET /divididas/documentacion/  → vista documentacion()
+    path('documentacion/', documentacion, name='documentacion'),
+
+    # GET /divididas/menu/           → vista menu()
+    path('menu/', menu, name='menu'),
+
+    # GET/POST /divididas/newton/    → vista metodo_newton()
+    path('newton/', metodo_newton, name='metodo_newton'),
 ]

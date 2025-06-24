@@ -13,10 +13,9 @@
 <body>
 
     <!-- Navbar -->
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="#">Análisis Numérico</a>
+            <a class="navbar-brand fw-bold" href="{% url 'index' %}">Análisis Numérico</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -32,21 +31,17 @@
                             {{ request.user.username }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{% url 'perfil_usuario' %}">Ver Perfil</a></li>
-                            <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
+                            <li><a class="dropdown-item" href="{% url 'usuarios:perfil_usuario' %}">Ver Perfil</a></li>
+                            <li><a class="dropdown-item" href="{% url 'usuarios:logout' %}">Cerrar sesión</a></li>
                         </ul>
                     </li>
                     {% else %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'usuarios:login' %}">Iniciar Sesión</a></li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
-
-
-
-
 
     <!-- Contenido principal con dos columnas -->
     <div class="container my-5">
@@ -104,11 +99,11 @@
             <!-- Tarjeta integrante 1 -->
             <div class="col-md-5 col-lg-4">
                 <div class="card shadow" style="background-color: #1e1e1e; color: #33ff33; border: none;">
-                    <img src="ruta_de_la_foto_1.jpg" class="card-img-top" alt="Nombre Integrante 1"
+                    <img src="../media/perfiles/minch.jpeg" class="card-img-top" alt="Ángel Osmin Ramírez Berrios"
                         style="object-fit: cover; height: 250px;">
                     <div class="card-body">
-                        <h5 class="card-title" style="color: #33ff33;">Nombre Integrante 1</h5>
-                        <p class="card-text" style="color: #33ff33;">Descripción corta o rol (opcional)</p>
+                        <h5 class="card-title" style="color: #33ff33;">Ángel Osmin Ramírez Berrios</h5>
+                        <p class="card-text" style="color: #33ff33;">Carnet: RB21025</p>
                     </div>
                 </div>
             </div>
@@ -116,11 +111,11 @@
             <!-- Tarjeta integrante 2 -->
             <div class="col-md-5 col-lg-4">
                 <div class="card shadow" style="background-color: #1e1e1e; color: #33ff33; border: none;">
-                    <img src="ruta_de_la_foto_2.jpg" class="card-img-top" alt="Nombre Integrante 2"
+                    <img src="../media/perfiles/cristian.jpeg" class="card-img-top" alt="Cristian Geovanny Rubio Garcia"
                         style="object-fit: cover; height: 250px;">
                     <div class="card-body">
-                        <h5 class="card-title" style="color: #33ff33;">Nombre Integrante 2</h5>
-                        <p class="card-text" style="color: #33ff33;">Descripción corta o rol (opcional)</p>
+                        <h5 class="card-title" style="color: #33ff33;">Cristian Geovanny Rubio Garcia</h5>
+                        <p class="card-text" style="color: #33ff33;">Carnet: RG22016</p>
                     </div>
                 </div>
             </div>
@@ -135,7 +130,7 @@
         </div>
     </footer>
 
-    <!-- Modal -->
+    <!-- Modal de mensajes -->
     <div class="modal fade" id="mensajeModal" tabindex="-1" aria-labelledby="mensajeModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -162,7 +157,6 @@
         });
     </script>
     {% endif %}
-
 </body>
 
 </html>

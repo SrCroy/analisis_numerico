@@ -50,7 +50,7 @@
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand fw-bold" href="{% url 'index' %}">Análisis Numérico</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -58,8 +58,12 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'documentacion' %}">Documentación</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'menu' %}">Métodos</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'documentacion' %}">Documentación</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'menu' %}">Métodos</a>
+                    </li>
                     {% if request.user.is_authenticated %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -71,11 +75,22 @@
                             {% endif %}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'usuarios:perfil_usuario' %}">
+                                    Ver Perfil
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'usuarios:logout' %}">
+                                    Cerrar sesión
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     {% else %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'usuarios:login' %}">Iniciar Sesión</a>
+                    </li>
                     {% endif %}
                 </ul>
             </div>
@@ -84,7 +99,7 @@
 
     <div class="main-content">
         <!-- Formulario de Registro -->
-        <div class="d-flex flex-column justify-content-center align-items-center registro-wrapper">
+        <div class="registro-wrapper d-flex flex-column justify-content-center align-items-center">
             <div class="registro-form-container">
                 <div class="terminal-header">
                     <div class="circle red"></div>
@@ -92,7 +107,7 @@
                     <div class="circle green"></div>
                     <span class="ms-2">Crear Usuario</span>
                 </div>
-                <div class="terminal">
+                <div class="terminal p-4">
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         {% if form.errors %}
@@ -102,10 +117,10 @@
                         {% endif %}
                         {% for field in form %}
                         <div class="mb-2">
-                            <label class="form-label">{{ field.label }}:</label>
+                            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}:</label>
                             {{ field|add_class:"form-control" }}
                             {% if field.errors %}
-                            <ul class="errorlist">
+                            <ul class="errorlist text-danger">
                                 {% for error in field.errors %}
                                 <li>{{ error }}</li>
                                 {% endfor %}
@@ -114,7 +129,7 @@
                         </div>
                         {% endfor %}
                         {% if form.non_field_errors %}
-                        <ul class="errorlist mb-2">
+                        <ul class="errorlist text-danger mb-2">
                             {% for error in form.non_field_errors %}
                             <li>{{ error }}</li>
                             {% endfor %}
@@ -123,8 +138,9 @@
                         <button type="submit" class="btn btn-terminal w-100 mt-2">Crear Cuenta</button>
                         <div class="text-center mt-2">
                             <span>¿Ya tienes cuenta? </span>
-                            <a href="{% url 'index' %}" style="color: #33ff33; text-decoration: underline;">Iniciar
-                                sesión</a>
+                            <a href="{% url 'usuarios:login' %}" class="text-success text-decoration-underline">
+                                Iniciar sesión
+                            </a>
                         </div>
                     </form>
                 </div>
@@ -155,7 +171,7 @@
         </div>
     </div>
 
-    <footer class="bg-dark text-white text-center py-3" style="height: 80px;">
+    <footer class="bg-dark text-white text-center py-3">
         <div>
             <p class="mb-0">© 2025 Análisis Numérico. Todos los derechos reservados.</p>
             <p class="mb-0">Desarrollado por UES</p>

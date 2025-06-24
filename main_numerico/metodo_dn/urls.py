@@ -1,9 +1,11 @@
+# main_numerico/metodo_dn/urls.py
+
 from django.urls import path
-from . import views
+from .views import diferenciacion_view
+
+app_name = 'metodo_dn'
 
 urlpatterns = [
-    path('', views.index, name='index'),  # Página principal
-    path('documentacion/', views.documentacion, name='documentacion'),  # Documentación del método
-    path('menu/', views.menu, name='menu'),  # Menú de métodos
-    path('diferenciacion/', views.diferenciacion_view, name='diferenciacion_form'), # Vista del formulario y resultados
+    # Ruta única para tu método de diferenciación numérica
+    path('diferenciacion/', diferenciacion_view, name='diferenciacion_form'),
 ]

@@ -8,7 +8,7 @@
     <title>Login - Terminal Debian</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="{% static 'login/styles.css'%}">
+    <link rel="stylesheet" href="{% static 'login/styles.css' %}">
 </head>
 
 <body>
@@ -31,76 +31,89 @@
                             {{ request.user.username }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{% url 'perfil_usuario' %}">Ver Perfil</a></li>
-                            <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'usuarios:perfil_usuario' %}">
+                                    Ver Perfil
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'usuarios:logout' %}">
+                                    Cerrar sesión
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     {% else %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'usuarios:login' %}">Iniciar Sesión</a>
+                    </li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
 
-    <main class="d-flex flex-column justify-content-center align-items-center flex-grow-1">
+    <main class="d-flex flex-column justify-content-center align-items-center flex-grow-1"
+        style="padding-top: 80px; padding-bottom: 80px;">
         <!-- Login Terminal centrado -->
-        <div class="d-flex flex-column justify-content-center align-items-center"
-            style="height: calc(100vh - 56px - 80px);">
-            <div class="w-100" style="max-width: 600px;">
-                <div class="terminal-header">
-                    <div class="circle red"></div>
-                    <div class="circle yellow"></div>
-                    <div class="circle green"></div>
-                    <span class="ms-2">Login</span>
-                </div>
-                <div class="terminal">
+        <div class="w-100" style="max-width: 600px;">
+            <div class="terminal-header">
+                <div class="circle red"></div>
+                <div class="circle yellow"></div>
+                <div class="circle green"></div>
+                <span class="ms-2">Login</span>
+            </div>
+            <div class="terminal p-4">
 
-                    <form method="POST" action="{% url 'login' %}">
-                        {% csrf_token %}
+                <form method="POST" action="{% url 'usuarios:login' %}">
+                    {% csrf_token %}
 
-                        {% if messages %}
-                        <div>
-                            {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-                            {% endfor %}
-                        </div>
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                    {% endif %}
+
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                        {{ field|add_class:"form-control" }}
+                        {% if field.help_text %}
+                        <div class="form-text">{{ field.help_text }}</div>
                         {% endif %}
-
-                        {% for field in form %}
-                        <div class="mb-3">
-                            <label class="form-label">{{ field.label }}:</label>
-                            {{ field|add_class:"form-control" }}
-                            {% if field.errors %}
-                            <ul class="errorlist">
-                                {% for error in field.errors %}
-                                <li>{{ error }}</li>
-                                {% endfor %}
-                            </ul>
-                            {% endif %}
-                        </div>
-                        {% endfor %}
-
-                        <button type="submit" class="btn btn-terminal w-100 mt-3">Acceder</button>
-                    </form>
-
-                    <div class="text-center mt-3">
-                        <span>¿No tienes un usuario? </span>
-                        <a href="{% url 'registro' %}" style="color: #33ff33; text-decoration: underline;">Haz clic aquí
-                            para crear uno</a>
+                        {% if field.errors %}
+                        <ul class="errorlist text-danger">
+                            {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
                     </div>
+                    {% endfor %}
+
+                    <button type="submit" class="btn btn-terminal w-100 mt-3">
+                        Acceder
+                    </button>
+                </form>
+
+                <div class="text-center mt-3">
+                    <span>¿No tienes un usuario? </span>
+                    <a href="{% url 'usuarios:registro' %}" class="text-success text-decoration-underline">
+                        Haz clic aquí para crear uno
+                    </a>
                 </div>
             </div>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-3" style="height: 80px;">
-        <div>
+    <footer class="bg-dark text-white text-center py-3">
+        <div class="container">
             <p class="mb-0">© 2025 Análisis Numérico. Todos los derechos reservados.</p>
             <p class="mb-0">Desarrollado por UES</p>
         </div>
     </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
