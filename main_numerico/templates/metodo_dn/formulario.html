@@ -22,9 +22,12 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'documentacion' %}">Documentación</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'menu' %}">Métodos</a></li>
-
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'documentacion' %}">Documentación</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'menu' %}">Métodos</a>
+                    </li>
                     {% if request.user.is_authenticated %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -46,7 +49,9 @@
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'usuarios:login' %}">Iniciar Sesión</a>
+                        <a class="nav-link" href="{% url 'usuarios:login' %}">
+                            Iniciar Sesión
+                        </a>
                     </li>
                     {% endif %}
                 </ul>
@@ -54,49 +59,11 @@
         </div>
     </nav>
 
-    <!-- espacio bajo navbar -->
     <div style="padding-top: 70px;"></div>
-
     <div class="container py-5">
 
-        {# --- Resultado del último cálculo (solo para logueados) --- #}
-        {% if request.user.is_authenticated and historial_actual %}
-        <div class="terminal-container mb-4 p-3 border rounded">
-            <div class="terminal-header mb-3">
-                <div class="circle red"></div>
-                <div class="circle yellow"></div>
-                <div class="circle green"></div>
-                <span class="ms-2 fw-bold">Resultado del último cálculo</span>
-            </div>
-            <p><strong>Función:</strong> <code>{{ funcion }}</code></p>
-            <p><strong>Derivada Exacta:</strong> {{ historial_actual.derivada_exacta|floatformat:6 }}</p>
-            <p><strong>Forward:</strong> {{ historial_actual.derivada_forward|floatformat:6 }}
-                (Error: {{ historial_actual.error_forward|floatformat:4 }}%)</p>
-            <p><strong>Backward:</strong> {{ historial_actual.derivada_backward|floatformat:6 }}
-                (Error: {{ historial_actual.error_backward|floatformat:4 }}%)</p>
-            <p><strong>Central:</strong> {{ historial_actual.derivada_central|floatformat:6 }}
-                (Error: {{ historial_actual.error_central|floatformat:4 }}%)</p>
-
-            <h5>Procedimiento Forward:</h5>
-            <code>{{ historial_actual.formula_forward }}</code> → {{ historial_actual.pasos_forward }}
-
-            <h5>Procedimiento Backward:</h5>
-            <code>{{ historial_actual.formula_backward }}</code> → {{ historial_actual.pasos_backward }}
-
-            <h5>Procedimiento Central:</h5>
-            <code>{{ historial_actual.formula_central }}</code> → {{ historial_actual.pasos_central }}
-
-            {% if grafica_base64 %}
-            <div class="mt-3 text-center">
-                <img src="data:image/png;base64,{{ grafica_base64 }}" alt="Gráfica función y derivada" class="img-fluid"
-                    style="max-height: 400px;">
-            </div>
-            {% endif %}
-        </div>
-        {% endif %}
-
-        {# --- Resultado para usuarios anónimos --- #}
-        {% if not request.user.is_authenticated and derivada_exacta %}
+        {# --- RESULTADO: siempre visible tras POST válido --- #}
+        {% if derivada_exacta %}
         <div class="terminal-container mb-4 p-3 border rounded">
             <div class="terminal-header mb-3">
                 <div class="circle red"></div>
@@ -105,23 +72,58 @@
                 <span class="ms-2 fw-bold">Resultado del cálculo</span>
             </div>
             <p><strong>Derivada Exacta:</strong> {{ derivada_exacta|floatformat:6 }}</p>
-            <p><strong>Forward:</strong> {{ derivada_forward|floatformat:6 }}
-                (Error: {{ error_forward|floatformat:4 }}%)</p>
-            <p><strong>Backward:</strong> {{ derivada_backward|floatformat:6 }}
-                (Error: {{ error_backward|floatformat:4 }}%)</p>
-            <p><strong>Central:</strong> {{ derivada_central|floatformat:6 }}
-                (Error: {{ error_central|floatformat:4 }}%)</p>
+            <p>
+                <strong>Forward:</strong> {{ derivada_forward|floatformat:6 }}
+                (Error: {{ error_forward|floatformat:4 }}%)
+            </p>
+            <p>
+                <strong>Backward:</strong> {{ derivada_backward|floatformat:6 }}
+                (Error: {{ error_backward|floatformat:4 }}%)
+            </p>
+            <p>
+                <strong>Central:</strong> {{ derivada_central|floatformat:6 }}
+                (Error: {{ error_central|floatformat:4 }}%)
+            </p>
 
+            {# Invitación a loguearse para ver paso a paso #}
+            {% if not request.user.is_authenticated %}
             <div class="alert alert-info mt-3">
-                <p>Inicia sesión para ver fórmulas, pasos y la gráfica de la función.</p>
-                <a href="{% url 'usuarios:login' %}?next={{ request.path }}" class="btn btn-success">
-                    <i class="bi bi-box-arrow-in-right"></i> Iniciar sesión
-                </a>
+                Para ver el <strong>procedimiento paso a paso</strong>,
+                por favor
+                <a href="{% url 'usuarios:login' %}?next={{ request.path }}">
+                    inicia sesión
+                </a>.
             </div>
+            {% endif %}
+
+            {# Contenido extra SOLO para usuarios autenticados #}
+            {% if request.user.is_authenticated and historial_actual %}
+            <hr>
+            <p><strong>Función:</strong> <code>{{ funcion }}</code></p>
+
+            <h5>Procedimiento Forward:</h5>
+            <code>{{ historial_actual.formula_forward }}</code>
+            → {{ historial_actual.pasos_forward }}
+
+            <h5>Procedimiento Backward:</h5>
+            <code>{{ historial_actual.formula_backward }}</code>
+            → {{ historial_actual.pasos_backward }}
+
+            <h5>Procedimiento Central:</h5>
+            <code>{{ historial_actual.formula_central }}</code>
+            → {{ historial_actual.pasos_central }}
+
+            {% if grafica_base64 %}
+            <div class="mt-3 text-center">
+                <img src="data:image/png;base64,{{ grafica_base64 }}" alt="Gráfica función y derivada" class="img-fluid"
+                    style="max-height: 400px;">
+            </div>
+            {% endif %}
+            {% endif %}
         </div>
         {% endif %}
 
-        {# --- Formulario siempre visible --- #}
+        {# --- FORMULARIO --- #}
         <div class="terminal-container">
             <div class="terminal-header">
                 <div class="circle red"></div>
@@ -154,7 +156,7 @@
             </div>
         </div>
 
-        {# --- Historial para logueados --- #}
+        {# --- HISTORIAL SOLO PARA LOGUEADOS --- #}
         {% if request.user.is_authenticated and historial_usuario %}
         <div class="terminal-container mt-5">
             <div class="terminal-header">
@@ -209,7 +211,8 @@
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+    </script>
 </body>
 
 </html>

@@ -1,6 +1,5 @@
-# main_numerico/metodo_dn/views.py
-
 from django.shortcuts import render
+from django.db import DataError
 from .forms import DifferenceDividedHistoryForm
 from .models import DifferenceDividedHistory
 from sympy import sympify, symbols, diff, lambdify
@@ -17,55 +16,75 @@ def diferenciacion_view(request):
     grafica_base64 = None
     funcion = None
 
+    derivada_exacta = derivada_forward = derivada_backward = derivada_central = None
+    error_forward = error_backward = error_central = None
+
     if request.method == 'POST':
         form = DifferenceDividedHistoryForm(request.POST)
         if form.is_valid():
             funcion = form.cleaned_data['function']
-            x_val = form.cleaned_data['x_value']
-            h = form.cleaned_data['h_value']
+            x_val   = form.cleaned_data['x_value']
+            h       = form.cleaned_data['h_value']
+
+            # --- Parsear y derivar simbólicamente ---
+            func = sympify(funcion)
+            derivada_exacta_expr = diff(func, x)
+
+            # --- Crear funciones numéricas ---
+            f_np  = lambdify(x, func,                'numpy')
+            df_np = lambdify(x, derivada_exacta_expr, 'numpy')
+
+            # --- Evaluar numéricamente con lambdify ---
             try:
-                # --- Cálculo simbólico ---
-                func = sympify(funcion)
-                derivada_exacta_expr = diff(func, x)
-                derivada_exacta = float(derivada_exacta_expr.evalf(subs={x: x_val}))
+                f0              = float(f_np(x_val))
+                fph             = float(f_np(x_val + h))
+                fmh             = float(f_np(x_val - h))
+                derivada_exacta = float(df_np(x_val))
+            except Exception as e:
+                form.add_error('function', f"No pude evaluar la función: {e}")
+                return render(request, 'metodo_dn/formulario.html', {
+                    'form': form,
+                    'user_authenticated': user_authenticated,
+                    'historial_actual': historial_actual,
+                    'historial_usuario': historial_usuario,
+                    'grafica_base64': grafica_base64,
+                })
 
-                # --- Evaluaciones numéricas ---
-                f0 = float(func.evalf(subs={x: x_val}))
-                fph = float(func.evalf(subs={x: x_val + h}))
-                fmh = float(func.evalf(subs={x: x_val - h}))
+            # --- Cálculo de derivadas numéricas y errores ---
+            derivada_forward  = (fph - f0) / h
+            derivada_backward = (f0  - fmh) / h
+            derivada_central  = (fph - fmh) / (2*h)
 
-                fwd = (fph - f0) / h
-                bwd = (f0 - fmh) / h
-                cen = (fph - fmh) / (2*h)
+            error_forward  = abs((derivada_exacta - derivada_forward)  / derivada_exacta) * 100
+            error_backward = abs((derivada_exacta - derivada_backward) / derivada_exacta) * 100
+            error_central  = abs((derivada_exacta - derivada_central)  / derivada_exacta) * 100
 
-                error_fwd = abs((derivada_exacta - fwd) / derivada_exacta) * 100
-                error_bwd = abs((derivada_exacta - bwd) / derivada_exacta) * 100
-                error_cen = abs((derivada_exacta - cen) / derivada_exacta) * 100
+            if user_authenticated:
+                # --- Preparar objeto, sin guardar aún ---
+                hobj = form.save(commit=False)
+                hobj.user               = request.user
+                hobj.derivada_exacta    = derivada_exacta
+                hobj.derivada_forward   = derivada_forward
+                hobj.derivada_backward  = derivada_backward
+                hobj.derivada_central   = derivada_central
+                hobj.error_forward      = error_forward
+                hobj.error_backward     = error_backward
+                hobj.error_central      = error_central
 
-                if user_authenticated:
-                    # --- Guardar historial ---
-                    hobj = form.save(commit=False)
-                    hobj.user = request.user
-                    hobj.derivada_exacta = derivada_exacta
-                    hobj.derivada_forward = fwd
-                    hobj.derivada_backward = bwd
-                    hobj.derivada_central = cen
-                    hobj.error_forward = error_fwd
-                    hobj.error_backward = error_bwd
-                    hobj.error_central = error_cen
+                hobj.formula_forward    = "(f(x+h) - f(x)) / h"
+                hobj.formula_backward   = "(f(x) - f(x-h)) / h"
+                hobj.formula_central    = "(f(x+h) - f(x-h)) / (2*h)"
 
-                    hobj.formula_forward = "(f(x+h) - f(x)) / h"
-                    hobj.formula_backward = "(f(x) - f(x-h)) / h"
-                    hobj.formula_central = "(f(x+h) - f(x-h)) / (2*h)"
+                hobj.pasos_forward      = f"({fph} - {f0}) / {h}"
+                hobj.pasos_backward     = f"({f0} - {fmh}) / {h}"
+                hobj.pasos_central      = f"({fph} - {fmh}) / (2*{h})"
 
-                    hobj.pasos_forward = f"({fph} - {f0}) / {h}"
-                    hobj.pasos_backward = f"({f0} - {fmh}) / {h}"
-                    hobj.pasos_central = f"({fph} - {fmh}) / (2*{h})"
-
+                # --- Intentamos guardar; capturamos DataError si es fuera de rango ---
+                try:
                     hobj.save()
                     historial_actual = hobj
 
-                    # --- Historial único para tabla ---
+                    # --- Historial único ---
                     todos = DifferenceDividedHistory.objects.filter(user=request.user).order_by('-id')
                     unique = {}
                     for e in todos:
@@ -74,9 +93,7 @@ def diferenciacion_view(request):
                             unique[key] = e
                     historial_usuario = list(unique.values())
 
-                    # --- Generar gráfica ---
-                    f_np = lambdify(x, func, 'numpy')
-                    df_np = lambdify(x, derivada_exacta_expr, 'numpy')
+                    # --- Generar gráfica para autenticados ---
                     xs = np.linspace(x_val - 3*h, x_val + 3*h, 200)
                     ys = f_np(xs)
                     dys = df_np(xs)
@@ -90,27 +107,29 @@ def diferenciacion_view(request):
                     plt.close(fig)
                     grafica_base64 = base64.b64encode(buf.getvalue()).decode()
 
-                # al final del POST renderizamos
-                return render(request, 'metodo_dn/formulario.html', {
-                    'form': form,
-                    'user_authenticated': user_authenticated,
-                    'historial_actual': historial_actual,
-                    'funcion': funcion,
-                    'historial_usuario': historial_usuario,
-                    'grafica_base64': grafica_base64,
-                    'derivada_exacta': derivada_exacta,
-                    'derivada_forward': fwd,
-                    'derivada_backward': bwd,
-                    'derivada_central': cen,
-                    'error_forward': error_fwd,
-                    'error_backward': error_bwd,
-                    'error_central': error_cen,
-                })
+                except DataError:
+                    # Si el valor es demasiado grande para DecimalField,
+                    # omitimos guardar historial y gráfica
+                    historial_actual = None
 
-            except Exception as e:
-                form.add_error('function', f"Error en la función: {e}")
+            # --- Renderizamos siempre con datos numéricos ---
+            return render(request, 'metodo_dn/formulario.html', {
+                'form': form,
+                'user_authenticated': user_authenticated,
+                'historial_actual': historial_actual,
+                'historial_usuario': historial_usuario,
+                'grafica_base64': grafica_base64,
+                'funcion': funcion,
+                'derivada_exacta':    derivada_exacta,
+                'derivada_forward':    derivada_forward,
+                'error_forward':       error_forward,
+                'derivada_backward':   derivada_backward,
+                'error_backward':      error_backward,
+                'derivada_central':    derivada_central,
+                'error_central':       error_central,
+            })
+
     else:
-        # GET: solo preparar formulario y, si hay usuario, historial_usuario
         form = DifferenceDividedHistoryForm()
         if user_authenticated:
             todos = DifferenceDividedHistory.objects.filter(user=request.user).order_by('-id')
@@ -121,20 +140,11 @@ def diferenciacion_view(request):
                     unique[key] = e
             historial_usuario = list(unique.values())
 
-    # render final para GET o POST inválido
+    # GET o POST inválido: renderizar sin resultados
     return render(request, 'metodo_dn/formulario.html', {
         'form': form,
         'user_authenticated': user_authenticated,
         'historial_actual': historial_actual,
-        'funcion': funcion,
         'historial_usuario': historial_usuario,
         'grafica_base64': grafica_base64,
-        # datos numéricos para anónimos
-        'derivada_exacta': locals().get('derivada_exacta'),
-        'derivada_forward': locals().get('fwd'),
-        'derivada_backward': locals().get('bwd'),
-        'derivada_central': locals().get('cen'),
-        'error_forward': locals().get('error_fwd'),
-        'error_backward': locals().get('error_bwd'),
-        'error_central': locals().get('error_cen'),
     })
